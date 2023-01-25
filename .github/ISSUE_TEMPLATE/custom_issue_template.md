@@ -1,5 +1,5 @@
 ---
-name: 커스텀 이슈 템플릿
+name: CUSTOM_ISSUE_TEMPLATE
 about: 8기 9조 팀의 이슈 사항 통합 템플릿
 title: ''
 labels: ''
