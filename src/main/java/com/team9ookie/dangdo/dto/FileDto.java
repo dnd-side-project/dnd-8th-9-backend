@@ -17,14 +17,14 @@ import lombok.ToString;
 public class FileDto {
 
     private long id;
-    private String type;
+    private FileType type;
     private String url;
     private String targetId;
 
     public FileEntity toEntity() {
         return FileEntity.builder()
             .id(id)
-            .type(type)
+            .type(FileType.STORE_IMAGE)
             .url(url)
             .targetId(targetId)
             .build();
