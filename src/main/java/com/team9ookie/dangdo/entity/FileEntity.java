@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name = "file")
-public class FileEntity {
+public class FileEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
