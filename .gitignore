@@ -37,4 +37,5 @@ out/
 .vscode/
 
 
-/dangdo/data
+/dangdo/mysql/data
+src/main/resources/application.yml
