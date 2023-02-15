@@ -6,14 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Store extends BaseEntity {
+public class Menu extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,27 +21,19 @@ public class Store extends BaseEntity {
     private String name;
 
     @Column
-    private String location;
+    private int price;
 
     @Column
-    private String businessHours;
-
-    @Column(columnDefinition = "TEXT")
-    private String orderForm;
-
-    @Column(columnDefinition = "LONGTEXT")
-    private String notice;
+    private String caution;
 
     @Column
-    private boolean canPickup;
-
-    @Column
-    private boolean canDelivery;
+    private String description;
 
     @Column
     private String category;
 
-    @OneToMany(mappedBy = "store")
-    private List<Menu> menuList;
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
 
 }

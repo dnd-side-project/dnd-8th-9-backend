@@ -1,20 +1,18 @@
 package com.team9ookie.dangdo.entity;
 
-import com.team9ookie.dangdo.dto.FileType;
+import com.team9ookie.dangdo.dto.Platform;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "file")
-public class FileEntity extends BaseEntity {
+public class StoreLink extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,11 +20,9 @@ public class FileEntity extends BaseEntity {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private FileType type;
+    private Platform platform;
 
     @Column
     private String url;
 
-    @Column
-    private String targetId;
 }

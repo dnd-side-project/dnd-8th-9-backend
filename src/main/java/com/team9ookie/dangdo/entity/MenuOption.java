@@ -1,20 +1,18 @@
 package com.team9ookie.dangdo.entity;
 
-import com.team9ookie.dangdo.dto.FileType;
+import com.team9ookie.dangdo.dto.MenuOptionType;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "file")
-public class FileEntity extends BaseEntity {
+public class MenuOption extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,11 +20,12 @@ public class FileEntity extends BaseEntity {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private FileType type;
+    private MenuOptionType type;
 
     @Column
-    private String url;
+    private String value;
 
-    @Column
-    private String targetId;
+    @Column(columnDefinition = "LONGTEXT")
+    private String note;
+
 }
