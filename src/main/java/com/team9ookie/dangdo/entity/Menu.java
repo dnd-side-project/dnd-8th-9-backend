@@ -36,4 +36,12 @@ public class Menu extends BaseEntity {
     @JoinColumn(name = "store_id")
     private Store store;
 
+    public void update(String name, int price, String caution, String description, String category, Store store) {
+        this.name = name;
+        this.price = price;
+        this.caution = caution;
+        this.description = description;
+        this.category = category;
+        this.store = store;
+    }
 }
