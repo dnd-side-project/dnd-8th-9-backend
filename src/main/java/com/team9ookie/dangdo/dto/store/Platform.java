@@ -1,4 +1,4 @@
-package com.team9ookie.dangdo.dto;
+package com.team9ookie.dangdo.dto.store;
 
 import lombok.Getter;
 

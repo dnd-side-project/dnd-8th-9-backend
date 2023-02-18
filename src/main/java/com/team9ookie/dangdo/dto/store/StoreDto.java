@@ -1,16 +1,15 @@
-package com.team9ookie.dangdo.dto;
+package com.team9ookie.dangdo.dto.store;
 
 import com.team9ookie.dangdo.entity.Store;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Getter
+@Setter
+@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
