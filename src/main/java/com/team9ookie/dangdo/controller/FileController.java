@@ -1,6 +1,6 @@
 package com.team9ookie.dangdo.controller;
 
-import com.team9ookie.dangdo.dto.FileDto;
+import com.team9ookie.dangdo.dto.file.FileDto;
 import com.team9ookie.dangdo.service.FileService;
 import com.team9ookie.dangdo.service.S3Service;
 import java.io.IOException;
@@ -14,8 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class FileController {
 
-    private S3Service s3Service;
-    private FileService fileService;
+    private final S3Service s3Service;
+    private final FileService fileService;
 
     @GetMapping("/file")
     public String dispWrite() {
