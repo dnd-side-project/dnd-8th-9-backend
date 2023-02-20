@@ -5,11 +5,12 @@ import com.team9ookie.dangdo.dto.menu.MenuResponseDto;
 import com.team9ookie.dangdo.service.MenuService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/store/{storeId}/menu")
+@RequestMapping("/stores/{storeId}/menus")
 @AllArgsConstructor
 public class MenuController {
 
@@ -26,12 +27,12 @@ public class MenuController {
     }
 
     @PostMapping("/")
-    public Long save(@PathVariable Long storeId, @RequestBody MenuRequestDto requestDto) {
-        return menuService.save(requestDto, storeId);
+    public Long save(@PathVariable Long storeId, @RequestBody MenuRequestDto requestDto, @RequestPart("menuImg") MultipartFile menuImg) {
+        return menuService.save(requestDto, storeId, menuImg);
     }
 
     @PutMapping("/{menuId}")
-    public Long update(@PathVariable Long storeId, @PathVariable Long menuId, @RequestBody MenuRequestDto requestDto) {
+    public Long update(@PathVariable Long storeId, @PathVariable Long menuId, @RequestPart MenuRequestDto requestDto) {
         return menuService.update(menuId, storeId, requestDto);
     }
 

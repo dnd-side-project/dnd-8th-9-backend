@@ -1,10 +1,14 @@
 package com.team9ookie.dangdo.entity;
 
+import com.team9ookie.dangdo.dto.menu.MenuRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @Getter
 @Builder
@@ -15,7 +19,7 @@ public class Menu extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column
     private String name;
@@ -36,12 +40,12 @@ public class Menu extends BaseEntity {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    public void update(String name, int price, String caution, String description, String category, Store store) {
-        this.name = name;
-        this.price = price;
-        this.caution = caution;
-        this.description = description;
-        this.category = category;
+    public void update(MenuRequestDto requestDto, Store store) {
+        this.name = requestDto.getName();
+        this.price = requestDto.getPrice();
+        this.caution = requestDto.getCaution();
+        this.description = requestDto.getDescription();
+        this.category = String.join(",", requestDto.getCategory());
         this.store = store;
     }
 }
