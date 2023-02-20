@@ -1,6 +1,6 @@
 package com.team9ookie.dangdo.entity;
 
-import com.team9ookie.dangdo.dto.MenuOptionType;
+import com.team9ookie.dangdo.dto.menu.MenuOptionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

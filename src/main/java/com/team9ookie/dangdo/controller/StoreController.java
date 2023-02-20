@@ -1,10 +1,14 @@
 package com.team9ookie.dangdo.controller;
 
-import com.team9ookie.dangdo.dto.StoreDto;
+import com.team9ookie.dangdo.dto.store.StoreRequestDto;
+import com.team9ookie.dangdo.dto.store.StoreResponseDto;
 import com.team9ookie.dangdo.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/store")
@@ -13,9 +17,29 @@ public class StoreController {
 
     private final StoreService storeService;
 
+    @GetMapping
+    public ResponseEntity<List<StoreResponseDto>> getAll() {
+        return ResponseEntity.ok(storeService.getAll());
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<StoreDto> get(@PathVariable long id) {
+    public ResponseEntity<StoreResponseDto> get(@PathVariable long id) {
         return ResponseEntity.ok(storeService.get(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<Long> create(@RequestPart StoreRequestDto dto, @RequestParam(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
+        return ResponseEntity.ok(storeService.create(dto, fileList));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<StoreResponseDto> update(@PathVariable long id, @RequestPart StoreRequestDto dto, @RequestParam(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
+        return ResponseEntity.ok(storeService.update(id, dto, fileList));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Long> delete(@PathVariable long id) {
+        return ResponseEntity.ok(storeService.delete(id));
     }
 
 }

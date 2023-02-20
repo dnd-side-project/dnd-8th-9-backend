@@ -1,6 +1,6 @@
 package com.team9ookie.dangdo.entity;
 
-import com.team9ookie.dangdo.dto.FileType;
+import com.team9ookie.dangdo.dto.file.FileType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -28,5 +28,6 @@ public class FileEntity extends BaseEntity {
     private String url;
 
     @Column
-    private String targetId;
+    private long targetId;
+
 }
