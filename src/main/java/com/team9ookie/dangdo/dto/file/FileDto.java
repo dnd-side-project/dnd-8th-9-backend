@@ -1,4 +1,4 @@
-package com.team9ookie.dangdo.dto;
+package com.team9ookie.dangdo.dto.file;
 
 import com.team9ookie.dangdo.entity.FileEntity;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ public class FileDto {
     private long id;
     private FileType type;
     private String url;
-    private String targetId;
+    private long targetId;
 
     public FileEntity toEntity() {
         return FileEntity.builder()

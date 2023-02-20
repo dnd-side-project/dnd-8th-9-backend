@@ -43,7 +43,10 @@ public class Store extends BaseEntity {
     @Column
     private String category;
 
-    @OneToMany(mappedBy = "store")
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
     private List<Menu> menuList;
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+    private List<StoreLink> storeLinkList;
 
 }

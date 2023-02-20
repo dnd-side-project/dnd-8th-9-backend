@@ -1,6 +1,6 @@
 package com.team9ookie.dangdo.entity;
 
-import com.team9ookie.dangdo.dto.Platform;
+import com.team9ookie.dangdo.dto.store.Platform;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,5 +24,9 @@ public class StoreLink extends BaseEntity {
 
     @Column
     private String url;
+
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
 
 }
