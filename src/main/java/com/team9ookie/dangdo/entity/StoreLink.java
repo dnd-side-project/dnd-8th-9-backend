@@ -16,7 +16,7 @@ public class StoreLink extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column
     @Enumerated(EnumType.STRING)
