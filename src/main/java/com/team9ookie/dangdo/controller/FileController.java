@@ -25,7 +25,7 @@ public class FileController {
 
     @PostMapping("/file")
     public String execWrite(FileDto fileDto, MultipartFile file) throws IOException {
-        String imgPath = s3Service.upload(file);
+        String imgPath = s3Service.upload(file, "test");
         fileDto.setUrl(imgPath);
 
         fileService.saveFile(fileDto);

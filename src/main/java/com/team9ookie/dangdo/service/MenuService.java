@@ -25,9 +25,9 @@ public class MenuService {
     public long save(MenuRequestDto requestDto, long storeId, MultipartFile menuImg){
         Store store = storeService.get(storeId).toEntity();
         
-        //Todo exception handler aop구현
+        //Todo global exception 처리 
         try {
-            s3Service.upload(menuImg);
+            s3Service.upload(menuImg,"menu");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
