@@ -19,9 +19,10 @@ public class MenuRequestDto {
     private String caution;
     private String description;
     private List<String> category;
+    private String summary;
 
     //Todo
     public Menu toEntity(Store store) {
-        return Menu.builder().name(name).price(price).caution(caution).description(description).category(String.join(",",category)).store(store).build();
+        return Menu.builder().name(name).price(price).caution(caution).description(description).category(String.join(",",category)).summary(summary).store(store).build();
     }
 }

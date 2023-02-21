@@ -27,12 +27,14 @@ public class Menu extends BaseEntity {
     @Column
     private int price;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String caution;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(columnDefinition = "TEXT")
+    private String summary;
     @Column
     private String category;
 
