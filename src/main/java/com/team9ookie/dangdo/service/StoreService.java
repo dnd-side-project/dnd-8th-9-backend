@@ -59,8 +59,8 @@ public class StoreService {
         storeLinkRepository.saveAll(exampleStoreLinkList);
 
         List<FileEntity> exampleFileEntityList = Arrays.asList(
-                FileEntity.builder().type(FileType.STORE_IMAGE).url("https://example-file.com").targetId(1).build(),
-                FileEntity.builder().type(FileType.STORE_IMAGE).url("https://example-file.com").targetId(3).build()
+                FileEntity.builder().type(FileType.STORE_IMAGE).url("https://example-file.com").targetId(1L).build(),
+                FileEntity.builder().type(FileType.STORE_IMAGE).url("https://example-file.com").targetId(3L).build()
         );
         fileRepository.saveAll(exampleFileEntityList);
     }
@@ -160,7 +160,7 @@ public class StoreService {
     private List<FileEntity> createFileEntityList(List<MultipartFile> fileList, long targetId) throws IOException {
         List<FileEntity> fileEntityList = new ArrayList<>();
         for (MultipartFile file : fileList) {
-            String url = s3Service.upload(file);
+            String url = s3Service.upload(file,"store");
             fileEntityList.add(FileEntity.builder()
                     .type(FileType.STORE_IMAGE)
                     .url(url)
