@@ -18,7 +18,7 @@ public class FileEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -28,6 +28,6 @@ public class FileEntity extends BaseEntity {
     private String url;
 
     @Column
-    private long targetId;
+    private Long targetId;
 
 }
