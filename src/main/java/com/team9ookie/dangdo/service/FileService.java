@@ -29,7 +29,7 @@ public class FileService {
         for (MultipartFile file : fileList) {
             String url = s3Service.upload(file, fileType.getFilePath());
             fileEntityList.add(FileEntity.builder()
-                    .type(FileType.STORE_IMAGE)
+                    .type(fileType)
                     .url(url)
                     .targetId(targetId)
                     .build());
