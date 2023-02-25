@@ -7,8 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 @Getter
 @Builder
@@ -42,6 +41,9 @@ public class Menu extends BaseEntity {
     @JoinColumn(name = "store_id")
     private Store store;
 
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
+    private List<Review> reviewList;
+
     public void update(MenuRequestDto requestDto, Store store) {
         this.name = requestDto.getName();
         this.price = requestDto.getPrice();
@@ -50,4 +52,5 @@ public class Menu extends BaseEntity {
         this.category = String.join(",", requestDto.getCategory());
         this.store = store;
     }
+
 }
