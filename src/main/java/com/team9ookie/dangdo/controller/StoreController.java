@@ -1,5 +1,6 @@
 package com.team9ookie.dangdo.controller;
 
+import com.team9ookie.dangdo.dto.BaseResponseDto;
 import com.team9ookie.dangdo.dto.store.StoreRequestDto;
 import com.team9ookie.dangdo.dto.store.StoreResponseDto;
 import com.team9ookie.dangdo.service.StoreService;
@@ -18,28 +19,28 @@ public class StoreController {
     private final StoreService storeService;
 
     @GetMapping
-    public ResponseEntity<List<StoreResponseDto>> getAll() {
-        return ResponseEntity.ok(storeService.getAll());
+    public ResponseEntity<BaseResponseDto<List<StoreResponseDto>>> getAll() {
+        return ResponseEntity.ok(BaseResponseDto.ok(storeService.getAll()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StoreResponseDto> get(@PathVariable long id) {
-        return ResponseEntity.ok(storeService.get(id));
+    public ResponseEntity<BaseResponseDto<StoreResponseDto>> get(@PathVariable long id) {
+        return ResponseEntity.ok(BaseResponseDto.ok(storeService.get(id)));
     }
 
     @PostMapping
-    public ResponseEntity<Long> create(@RequestPart StoreRequestDto dto, @RequestParam(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
-        return ResponseEntity.ok(storeService.create(dto, fileList));
+    public ResponseEntity<BaseResponseDto<Long>> create(@RequestPart StoreRequestDto dto, @RequestParam(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
+        return ResponseEntity.ok(BaseResponseDto.ok(storeService.create(dto, fileList)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StoreResponseDto> update(@PathVariable long id, @RequestPart StoreRequestDto dto, @RequestParam(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
-        return ResponseEntity.ok(storeService.update(id, dto, fileList));
+    public ResponseEntity<BaseResponseDto<StoreResponseDto>> update(@PathVariable long id, @RequestPart StoreRequestDto dto, @RequestParam(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
+        return ResponseEntity.ok(BaseResponseDto.ok(storeService.update(id, dto, fileList)));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Long> delete(@PathVariable long id) {
-        return ResponseEntity.ok(storeService.delete(id));
+    public ResponseEntity<BaseResponseDto<Long>> delete(@PathVariable long id) {
+        return ResponseEntity.ok(BaseResponseDto.ok(storeService.delete(id)));
     }
 
 }
