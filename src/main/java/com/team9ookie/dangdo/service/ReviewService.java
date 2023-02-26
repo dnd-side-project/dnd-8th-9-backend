@@ -1,6 +1,6 @@
 package com.team9ookie.dangdo.service;
 
-import com.team9ookie.dangdo.dto.ReviewRequestDto;
+import com.team9ookie.dangdo.dto.review.ReviewRequestDto;
 import com.team9ookie.dangdo.dto.file.FileDto;
 import com.team9ookie.dangdo.dto.file.FileType;
 import com.team9ookie.dangdo.dto.review.ReviewResponseDto;
