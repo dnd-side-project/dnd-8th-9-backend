@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/store/{storeId}/menu")
+@RequestMapping("/stores/{storeId}/menus")
 @AllArgsConstructor
 public class MenuController {
 
