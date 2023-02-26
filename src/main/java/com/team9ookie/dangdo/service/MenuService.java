@@ -73,11 +73,12 @@ public class MenuService {
     }
 
     @Transactional
-    public void delete (Long id) {
+    public Long delete (Long id) {
         Menu menu = menuRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 메뉴가 없습니다. id=" + id));
 
         fileRepository.deleteAllByTypeAndTargetId(FileType.MENU_IMAGE,menu.getId());
         menuRepository.delete(menu);
+        return id;
     }
 }
