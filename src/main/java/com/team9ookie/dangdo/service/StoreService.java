@@ -102,12 +102,13 @@ public class StoreService {
             fileRepository.saveAll(fileEntityList);
         }
 
-        List<StoreLink> storeLinkList = dto.getLinks().stream().map(storeLinkDto -> StoreLink.builder()
-                .platform(Platform.findByName(storeLinkDto.getPlatform()))
-                .url(storeLinkDto.getUrl())
-                .store(store)
-                .build()).toList();
-        if(storeLinkList != null && !storeLinkList.isEmpty()) {
+        List<StoreLinkDto> storeLinkDtoList = dto.getLinks();
+        if (storeLinkDtoList != null && !storeLinkDtoList.isEmpty()) {
+            List<StoreLink> storeLinkList = dto.getLinks().stream().map(storeLinkDto -> StoreLink.builder()
+                    .platform(Platform.findByName(storeLinkDto.getPlatform()))
+                    .url(storeLinkDto.getUrl())
+                    .store(store)
+                    .build()).toList();
             storeLinkRepository.saveAll(storeLinkList);
         }
 
