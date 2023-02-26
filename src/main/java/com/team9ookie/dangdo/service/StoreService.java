@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +26,7 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 public class StoreService {
 
-    private final S3Service s3Service;
+    private final FileService fileService;
 
     private final StoreRepository storeRepository;
 
@@ -99,7 +98,7 @@ public class StoreService {
         Store store = storeRepository.save(dto.toEntity());
 
         if (fileList != null && !fileList.isEmpty()) {
-            List<FileEntity> fileEntityList = createFileEntityList(fileList, store.getId());
+            List<FileEntity> fileEntityList = fileService.createFileList(fileList, FileType.STORE_IMAGE, store.getId());
             fileRepository.saveAll(fileEntityList);
         }
 
@@ -125,7 +124,7 @@ public class StoreService {
         fileRepository.deleteAllByTypeAndTargetId(FileType.STORE_IMAGE, id);
         List<FileEntity> fileEntityList = new ArrayList<>();
         if (fileList != null && !fileList.isEmpty()) {
-            fileEntityList = createFileEntityList(fileList, store.getId());
+            fileEntityList = fileService.createFileList(fileList, FileType.STORE_IMAGE, store.getId());
             fileRepository.saveAll(fileEntityList);
         }
 
@@ -155,19 +154,6 @@ public class StoreService {
                 .orElseThrow(() -> new IllegalArgumentException("업체를 찾을 수 없습니다. id: " + id));
         storeRepository.deleteById(store.getId());
         return store.getId();
-    }
-
-    private List<FileEntity> createFileEntityList(List<MultipartFile> fileList, long targetId) throws IOException {
-        List<FileEntity> fileEntityList = new ArrayList<>();
-        for (MultipartFile file : fileList) {
-            String url = s3Service.upload(file,"store");
-            fileEntityList.add(FileEntity.builder()
-                    .type(FileType.STORE_IMAGE)
-                    .url(url)
-                    .targetId(targetId)
-                    .build());
-        }
-        return fileEntityList;
     }
 
 }

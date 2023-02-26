@@ -1,6 +1,6 @@
 package com.team9ookie.dangdo.entity;
 
-import com.team9ookie.dangdo.dto.store.Platform;
+import com.team9ookie.dangdo.dto.review.GoodPoint;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,21 +12,26 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class StoreLink extends BaseEntity {
+public class Review extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    @Enumerated(EnumType.STRING)
-    private Platform platform;
+    private String content;
 
     @Column
-    private String url;
+    private int dangdo;
+
+    @Column
+    private GoodPoint goodPoint;
+
+    @Column
+    private boolean reorder;
 
     @ManyToOne
-    @JoinColumn(name = "store_id")
-    private Store store;
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
 
 }
