@@ -31,13 +31,13 @@ public class MenuController {
     }
 
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<BaseResponseDto<Long>> save(@PathVariable Long storeId, @RequestPart MenuRequestDto requestDto, @RequestPart MultipartFile menuImg) {
-        return ResponseEntity.ok(BaseResponseDto.ok(menuService.save(requestDto, storeId, menuImg)));
+    public ResponseEntity<BaseResponseDto<Long>> save(@PathVariable Long storeId, @RequestPart MenuRequestDto dto, @RequestPart(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
+        return ResponseEntity.ok(BaseResponseDto.ok(menuService.save(dto, storeId, fileList)));
     }
 
     @PutMapping(value = "/{menuId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<BaseResponseDto<Long>> update(@PathVariable Long storeId, @PathVariable Long menuId, @RequestPart MenuRequestDto requestDto, @RequestPart MultipartFile menuImg) {
-        return ResponseEntity.ok(BaseResponseDto.ok(menuService.update(menuId, storeId, requestDto, menuImg)));
+    public ResponseEntity<BaseResponseDto<Long>> update(@PathVariable Long storeId, @PathVariable Long menuId, @RequestPart MenuRequestDto dto, @RequestPart(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
+        return ResponseEntity.ok(BaseResponseDto.ok(menuService.update(menuId, storeId, dto, fileList)));
     }
 
     @DeleteMapping("/{menuId}")
