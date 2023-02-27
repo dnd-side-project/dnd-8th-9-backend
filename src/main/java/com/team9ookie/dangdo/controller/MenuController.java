@@ -30,6 +30,11 @@ public class MenuController {
         return ResponseEntity.ok(BaseResponseDto.ok(menuService.findById(menuId)));
     }
 
+    @GetMapping(params = "name")
+    public ResponseEntity<BaseResponseDto<List<MenuResponseDto>>> searchMenusByName(@RequestParam String name) {
+        return ResponseEntity.ok(BaseResponseDto.ok(menuService.searchMenusByName(name)));
+    }
+
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<BaseResponseDto<Long>> save(@PathVariable Long storeId, @RequestPart MenuRequestDto requestDto, @RequestPart MultipartFile menuImg) {
         return ResponseEntity.ok(BaseResponseDto.ok(menuService.save(requestDto, storeId, menuImg)));

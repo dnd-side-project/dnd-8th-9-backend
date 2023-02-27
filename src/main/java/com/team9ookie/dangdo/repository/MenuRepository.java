@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface MenuRepository extends JpaRepository<Menu, Long> {
     List<Menu> findByStore_Id(@Param(value = "storeId") Long storeId);
+
+    List<Menu> findByNameContainingIgnoreCase(String name);
 }
