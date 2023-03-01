@@ -1,5 +1,6 @@
 package com.team9ookie.dangdo.dto.menu;
 
+import com.team9ookie.dangdo.dto.file.FileDto;
 import com.team9ookie.dangdo.entity.Menu;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,16 +23,16 @@ public class MenuDetailDto {
     private String caution;
     private String description;
     private List<String> category;
+    private List<FileDto> menuImages;
 
-    public static MenuDetailDto of(Menu menu){
+    public static MenuDetailDtoBuilder create(Menu menu){
         return MenuDetailDto.builder()
                 .id(menu.getId())
                 .name(menu.getName())
                 .price(menu.getPrice())
                 .caution(menu.getCaution())
                 .category(new ArrayList<>(Arrays.asList(menu.getCategory().split(","))))
-                .description(menu.getDescription())
-                .build();
+                .description(menu.getDescription());
     }
 
 }

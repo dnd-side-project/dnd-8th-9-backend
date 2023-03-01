@@ -1,5 +1,6 @@
 package com.team9ookie.dangdo.service;
 
+import com.team9ookie.dangdo.dto.file.FileDto;
 import com.team9ookie.dangdo.dto.file.FileType;
 import com.team9ookie.dangdo.dto.menu.MenuDetailDto;
 import com.team9ookie.dangdo.dto.menu.MenuRequestDto;
@@ -14,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -26,31 +25,37 @@ public class MenuService {
     private final FileRepository fileRepository;
     private final S3Service s3Service;
     private final StoreService storeService;
+    private final FileService fileService;
+
     @Transactional
-    public Long save(MenuRequestDto requestDto, long storeId, MultipartFile menuImg){
+    public Long save(MenuRequestDto requestDto, long storeId, List<MultipartFile> fileList) throws Exception {
         Store store = storeService.get(storeId).toEntity();
         Long id = menuRepository.save(requestDto.toEntity(store)).getId();
-        //Todo global exception 처리
-        try {
-            String filePath = s3Service.upload(menuImg,"menu");
-            FileEntity file = FileEntity.builder().type(FileType.MENU_IMAGE).url(filePath).targetId(id).build();
-            fileRepository.save(file);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+
+        if (fileList != null && !fileList.isEmpty()) {
+            List<FileEntity> fileEntityList = fileService.createFileList(fileList, FileType.MENU_IMAGE, id);
+            fileRepository.saveAll(fileEntityList);
         }
+
         return id;
     }
 
     @Transactional(readOnly = true)
     public MenuDetailDto findById(long id) {
         Menu entity = menuRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 메뉴가 없습니다. id=" + id));
+        List<FileEntity> fileEntityList = fileRepository.findAllByTypeAndTargetId(FileType.MENU_IMAGE, id);
 
-        return MenuDetailDto.of(entity);
+        return MenuDetailDto.create(entity).menuImages(fileEntityList.stream().map(FileDto::of).toList()).build();
     }
 
     @Transactional(readOnly = true)
     public List<MenuResponseDto> findAll(Long storeId) {
-        return menuRepository.findByStore_Id(storeId).stream().map(MenuResponseDto::of).collect(Collectors.toList());
+        List<Menu> menuList = menuRepository.findByStore_Id(storeId);
+
+        return menuList.stream().map(menu -> {
+            List<FileEntity> menuImages = fileRepository.findAllByTypeAndTargetId(FileType.MENU_IMAGE, menu.getId());
+            return MenuResponseDto.create(menu).menuImages(menuImages.stream().map(FileDto::of).toList()).build();
+        }).toList();
     }
 
     @Transactional(readOnly = true)
@@ -64,30 +69,28 @@ public class MenuService {
     }
 
     @Transactional
-    public Long update(Long menuId, Long storeId, MenuRequestDto requestDto, MultipartFile menuImg){
+    public Long update(Long menuId, Long storeId, MenuRequestDto requestDto, List<MultipartFile> fileList) throws Exception {
         Menu menu = menuRepository.findById(menuId).orElseThrow(() -> new IllegalArgumentException("해당 메뉴가 없습니다. id=" + menuId));
 
         Store store = storeService.get(storeId).toEntity();
-        menu.update(requestDto,store);
+        menu.update(requestDto, store);
 
-        try {
-            fileRepository.deleteAllByTypeAndTargetId(FileType.MENU_IMAGE,menuId);
-            String filePath = s3Service.upload(menuImg,"menu");
-            FileEntity file = FileEntity.builder().type(FileType.MENU_IMAGE).url(filePath).targetId(menuId).build();
-            fileRepository.save(file);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        fileRepository.deleteAllByTypeAndTargetId(FileType.MENU_IMAGE, menuId);
+
+        if (fileList != null && !fileList.isEmpty()) {
+            List<FileEntity> fileEntityList = fileService.createFileList(fileList, FileType.MENU_IMAGE, menuId);
+            fileRepository.saveAll(fileEntityList);
         }
 
         return menuId;
     }
 
     @Transactional
-    public Long delete (Long id) {
+    public Long delete(Long id) {
         Menu menu = menuRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 메뉴가 없습니다. id=" + id));
 
-        fileRepository.deleteAllByTypeAndTargetId(FileType.MENU_IMAGE,menu.getId());
+        fileRepository.deleteAllByTypeAndTargetId(FileType.MENU_IMAGE, menu.getId());
         menuRepository.delete(menu);
         return id;
     }
