@@ -14,4 +14,6 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     @Query("select coalesce(min(m.price), 0) as minPrice, coalesce(max(m.price), 0) as maxPrice from Menu m where m.store.id = :storeId")
     Map<String, Integer> getPriceRange(Long storeId);
 
+
+    List<Menu> findByNameContainingIgnoreCase(String name);
 }
