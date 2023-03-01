@@ -53,6 +53,16 @@ public class MenuService {
         return menuRepository.findByStore_Id(storeId).stream().map(MenuResponseDto::of).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<MenuResponseDto> searchMenusByName(String name) {
+        List<Menu> menuList = menuRepository.findByNameContainingIgnoreCase(name);
+
+        return menuList.stream().map(menu -> {
+            List<FileEntity> menuImages = fileRepository.findAllByTypeAndTargetId(FileType.MENU_IMAGE, menu.getId());
+            return MenuResponseDto.create(menu).menuImages(menuImages.stream().map(FileDto::of).toList()).build();
+        }).toList();
+    }
+
     @Transactional
     public Long update(Long menuId, Long storeId, MenuRequestDto requestDto, MultipartFile menuImg){
         Menu menu = menuRepository.findById(menuId).orElseThrow(() -> new IllegalArgumentException("해당 메뉴가 없습니다. id=" + menuId));
