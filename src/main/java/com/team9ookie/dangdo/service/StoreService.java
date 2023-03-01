@@ -35,9 +35,11 @@ public class StoreService {
 
     private final StoreLinkRepository storeLinkRepository;
 
+    private final CustomStoreRepository customStoreRepository;
+
     private final FileRepository fileRepository;
 
-    // 테스트용 예제 데이터 생성 코드. 더미 데이터 생성 기능 구현 후 제거
+    // TODO: 테스트용 예제 데이터 생성 코드. 더미 데이터 생성 기능 구현 후 제거
     @PostConstruct
     public void initData() {
         if (storeRepository.count() > 0) return;
@@ -68,8 +70,14 @@ public class StoreService {
     }
 
     @Transactional(readOnly = true)
-    public List<StoreResponseDto> getAll() {
-        List<Store> storeList = storeRepository.findAll();
+    public List<StoreResponseDto> getAll(StoreConditionDto conditionDto) {
+        List<Store> storeList = null;
+        if (conditionDto == null) {
+            storeList = storeRepository.findAll();
+        } else{
+            storeList = customStoreRepository.findAllByCondition(conditionDto);
+        }
+
         return storeList.stream().map(store -> {
             // 평균 당도 (소수점 한 자리까지 나타냄)
             int rating = getAverageRating(store.getId());
