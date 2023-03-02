@@ -1,4 +1,4 @@
-package com.team9ookie.dangdo.dto;
+package com.team9ookie.dangdo.dto.review;
 
 import com.team9ookie.dangdo.dto.review.GoodPoint;
 import com.team9ookie.dangdo.entity.Menu;

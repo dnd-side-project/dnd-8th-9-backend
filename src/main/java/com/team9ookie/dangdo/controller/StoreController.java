@@ -1,6 +1,9 @@
 package com.team9ookie.dangdo.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team9ookie.dangdo.dto.BaseResponseDto;
+import com.team9ookie.dangdo.dto.store.StoreConditionDto;
 import com.team9ookie.dangdo.dto.store.StoreRequestDto;
 import com.team9ookie.dangdo.dto.store.StoreResponseDto;
 import com.team9ookie.dangdo.service.StoreService;
@@ -18,9 +21,16 @@ public class StoreController {
 
     private final StoreService storeService;
 
-    @GetMapping
-    public ResponseEntity<BaseResponseDto<List<StoreResponseDto>>> getAll() {
-        return ResponseEntity.ok(BaseResponseDto.ok(storeService.getAll()));
+    private final ObjectMapper objectMapper;
+
+    @GetMapping()
+    public ResponseEntity<BaseResponseDto<List<StoreResponseDto>>> getAll(@RequestParam(name = "cond", required = false) String condition) throws JsonProcessingException {
+        try {
+            StoreConditionDto conditionDto = objectMapper.readValue(condition, StoreConditionDto.class);
+            return ResponseEntity.ok(BaseResponseDto.ok(storeService.getAll(conditionDto)));
+        } catch (Exception e) {
+            throw new IllegalArgumentException("유효하지 않은 필터링 형식 cond=" + condition);
+        }
     }
 
     @GetMapping("/{id}")

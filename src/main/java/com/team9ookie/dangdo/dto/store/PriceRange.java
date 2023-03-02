@@ -10,8 +10,8 @@ import lombok.*;
 @AllArgsConstructor
 public class PriceRange {
 
-    private int max;
-
     private int min;
+
+    private int max;
 
 }

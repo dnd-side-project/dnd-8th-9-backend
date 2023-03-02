@@ -6,9 +6,7 @@ import com.team9ookie.dangdo.dto.store.*;
 import com.team9ookie.dangdo.entity.FileEntity;
 import com.team9ookie.dangdo.entity.Store;
 import com.team9ookie.dangdo.entity.StoreLink;
-import com.team9ookie.dangdo.repository.FileRepository;
-import com.team9ookie.dangdo.repository.StoreLinkRepository;
-import com.team9ookie.dangdo.repository.StoreRepository;
+import com.team9ookie.dangdo.repository.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 @Service
@@ -30,11 +29,17 @@ public class StoreService {
 
     private final StoreRepository storeRepository;
 
+    private final MenuRepository menuRepository;
+
+    private final ReviewRepository reviewRepository;
+
     private final StoreLinkRepository storeLinkRepository;
+
+    private final CustomStoreRepository customStoreRepository;
 
     private final FileRepository fileRepository;
 
-    // 테스트용 예제 데이터 생성 코드. 더미 데이터 생성 기능 구현 후 제거
+    // TODO: 테스트용 예제 데이터 생성 코드. 더미 데이터 생성 기능 구현 후 제거
     @PostConstruct
     public void initData() {
         if (storeRepository.count() > 0) return;
@@ -65,14 +70,27 @@ public class StoreService {
     }
 
     @Transactional(readOnly = true)
-    public List<StoreResponseDto> getAll() {
-        List<Store> storeList = storeRepository.findAll();
+    public List<StoreResponseDto> getAll(StoreConditionDto conditionDto) {
+        List<Store> storeList = null;
+        if (conditionDto == null) {
+            storeList = storeRepository.findAll();
+        } else{
+            storeList = customStoreRepository.findAllByCondition(conditionDto);
+        }
+
         return storeList.stream().map(store -> {
+            // 평균 당도 (소수점 한 자리까지 나타냄)
+            int rating = getAverageRating(store.getId());
+
+            // 최소, 최대 메뉴 금액
+            PriceRange priceRange = getPriceRange(store.getId());
+
+            // 업체와 연결된 링크, 파일
             List<StoreLink> storeLinkList = storeLinkRepository.findAllByStoreId(store.getId());
             List<FileEntity> fileEntityList = fileRepository.findAllByTypeAndTargetId(FileType.STORE_IMAGE, store.getId());
             return StoreResponseDto.create(store)
-                    .rating(80)
-                    .priceRange(new PriceRange(20000, 55000))
+                    .rating(rating)
+                    .priceRange(priceRange)
                     .links(storeLinkList.stream().map(StoreLinkDto::of).toList())
                     .storeImages(fileEntityList.stream().map(FileDto::of).toList())
                     .build();
@@ -83,11 +101,19 @@ public class StoreService {
     public StoreResponseDto get(long id) {
         Store store = storeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("업체를 찾을 수 없습니다. id: " + id));
+
+        // 평균 당도 (소수점 한 자리까지 나타냄)
+        int rating = getAverageRating(store.getId());
+
+        // 최소, 최대 메뉴 금액
+        PriceRange priceRange = getPriceRange(store.getId());
+
+        // 업체와 연결된 링크, 파일
         List<StoreLink> storeLinkList = storeLinkRepository.findAllByStoreId(id);
         List<FileEntity> fileEntityList = fileRepository.findAllByTypeAndTargetId(FileType.STORE_IMAGE, id);
         return StoreResponseDto.create(store)
-                .rating(80)
-                .priceRange(new PriceRange(20000, 55000))
+                .rating(rating)
+                .priceRange(priceRange)
                 .links(storeLinkList.stream().map(StoreLinkDto::of).toList())
                 .storeImages(fileEntityList.stream().map(FileDto::of).toList())
                 .build();
@@ -132,7 +158,7 @@ public class StoreService {
         storeLinkRepository.deleteAllByStoreId(id);
         List<StoreLink> storeLinkList = new ArrayList<>();
         List<StoreLinkDto> storeLinkDtoList = dto.getLinks();
-        if(storeLinkDtoList != null && !storeLinkDtoList.isEmpty()) {
+        if (storeLinkDtoList != null && !storeLinkDtoList.isEmpty()) {
             storeLinkList = dto.getLinks().stream().map(storeLinkDto -> StoreLink.builder()
                     .platform(Platform.findByName(storeLinkDto.getPlatform()))
                     .url(storeLinkDto.getUrl())
@@ -142,8 +168,8 @@ public class StoreService {
         }
 
         return StoreResponseDto.create(updatedStore)
-                .rating(80)
-                .priceRange(new PriceRange(20000, 55000))
+                .rating(getAverageRating(store.getId()))
+                .priceRange(getPriceRange(store.getId()))
                 .links(storeLinkList.stream().map(StoreLinkDto::of).toList())
                 .storeImages(fileEntityList.stream().map(FileDto::of).toList())
                 .build();
@@ -155,6 +181,17 @@ public class StoreService {
                 .orElseThrow(() -> new IllegalArgumentException("업체를 찾을 수 없습니다. id: " + id));
         storeRepository.deleteById(store.getId());
         return store.getId();
+    }
+
+    private int getAverageRating(Long storeId) {
+        return (int) Math.round(reviewRepository.getAverageRate(storeId) * 20);
+    }
+
+    private PriceRange getPriceRange(Long storeId) {
+        Map<String, Integer> priceRange = menuRepository.getPriceRange(storeId);
+        int minPrice = priceRange.get("minPrice");
+        int maxPrice = priceRange.get("maxPrice");
+        return PriceRange.builder().min(minPrice).max(maxPrice).build();
     }
 
 }
