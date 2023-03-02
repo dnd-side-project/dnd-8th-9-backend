@@ -38,6 +38,11 @@ public class StoreController {
         return ResponseEntity.ok(BaseResponseDto.ok(storeService.get(id)));
     }
 
+    @GetMapping(params = "name")
+    public ResponseEntity<BaseResponseDto<List<StoreResponseDto>>> searchStoresByName(@RequestParam String name) {
+        return ResponseEntity.ok(BaseResponseDto.ok(storeService.searchStoresByName(name)));
+    }
+
     @PostMapping
     public ResponseEntity<BaseResponseDto<Long>> create(@RequestPart StoreRequestDto dto, @RequestParam(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
         return ResponseEntity.ok(BaseResponseDto.ok(storeService.create(dto, fileList)));

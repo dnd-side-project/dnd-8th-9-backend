@@ -119,6 +119,16 @@ public class StoreService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
+    public List<StoreResponseDto> searchStoresByName(String name) {
+        List<Store> storeList = storeRepository.findByNameContainingIgnoreCase(name);
+
+        return storeList.stream().map(store -> {
+            List<FileEntity> storeImages = fileRepository.findAllByTypeAndTargetId(FileType.MENU_IMAGE, store.getId());
+            return StoreResponseDto.create(store).storeImages(storeImages.stream().map(FileDto::of).toList()).build();
+        }).toList();
+    }
+
     @Transactional
     public long create(StoreRequestDto dto, List<MultipartFile> fileList) throws Exception {
         Store store = storeRepository.save(dto.toEntity());
