@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 public class StoreDetailDto {
 
-    private long id;
+    private Long id;
 
     private String name;
 
