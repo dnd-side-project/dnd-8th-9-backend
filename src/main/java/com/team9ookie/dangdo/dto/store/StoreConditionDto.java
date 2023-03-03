@@ -12,6 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 public class StoreConditionDto {
 
+    private String search;
+
     private List<String> categories;
 
     @Builder.Default
