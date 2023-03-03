@@ -32,7 +32,8 @@ public class StoreRequestDto {
 
     private boolean canDelivery;
 
-    private List<String> category;
+    @Builder.Default
+    private List<String> category = new ArrayList<>();
 
     public Store toEntity() {
         return Store.builder()
