@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(indexes = @Index(name="name_index", columnList = "name"))
 public class Store extends BaseEntity {
 
     @Id

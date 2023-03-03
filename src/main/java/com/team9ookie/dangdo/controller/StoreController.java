@@ -39,6 +39,11 @@ public class StoreController {
         return ResponseEntity.ok(BaseResponseDto.ok(storeService.get(id)));
     }
 
+    @GetMapping(params = "name")
+    public ResponseEntity<BaseResponseDto<List<StoreResponseDto>>> searchStoresByName(@RequestParam String name) {
+        return ResponseEntity.ok(BaseResponseDto.ok(storeService.searchStoresByName(name)));
+    }
+
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<BaseResponseDto<Long>> create(@ModelAttribute StoreRequestDto dto, @RequestPart(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
         return ResponseEntity.ok(BaseResponseDto.ok(storeService.create(dto, fileList)));
