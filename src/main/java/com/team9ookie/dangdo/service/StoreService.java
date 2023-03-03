@@ -71,26 +71,13 @@ public class StoreService {
 
     @Transactional(readOnly = true)
     public List<StoreResponseDto> getAll(StoreConditionDto conditionDto) {
-        List<Store> storeList = null;
-        if (conditionDto == null) {
-            storeList = storeRepository.findAll();
-        } else{
-            storeList = customStoreRepository.findAllByCondition(conditionDto);
-        }
+        List<StoreDetailDto> storeDetailDtoList = customStoreRepository.getStoreListByCondition(conditionDto);
 
-        return storeList.stream().map(store -> {
-            // 평균 당도 (소수점 한 자리까지 나타냄)
-            int rating = getAverageRating(store.getId());
-
-            // 최소, 최대 메뉴 금액
-            PriceRange priceRange = getPriceRange(store.getId());
-
+        return storeDetailDtoList.stream().map(dto -> {
             // 업체와 연결된 링크, 파일
-            List<StoreLink> storeLinkList = storeLinkRepository.findAllByStoreId(store.getId());
-            List<FileEntity> fileEntityList = fileRepository.findAllByTypeAndTargetId(FileType.STORE_IMAGE, store.getId());
-            return StoreResponseDto.create(store)
-                    .rating(rating)
-                    .priceRange(priceRange)
+            List<StoreLink> storeLinkList = storeLinkRepository.findAllByStoreId(dto.getId());
+            List<FileEntity> fileEntityList = fileRepository.findAllByTypeAndTargetId(FileType.STORE_IMAGE, dto.getId());
+            return StoreResponseDto.create(dto)
                     .links(storeLinkList.stream().map(StoreLinkDto::of).toList())
                     .storeImages(fileEntityList.stream().map(FileDto::of).toList())
                     .build();

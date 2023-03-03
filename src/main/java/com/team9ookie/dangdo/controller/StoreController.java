@@ -28,7 +28,7 @@ public class StoreController {
         try {
             StoreConditionDto conditionDto = objectMapper.readValue(condition, StoreConditionDto.class);
             return ResponseEntity.ok(BaseResponseDto.ok(storeService.getAll(conditionDto)));
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("유효하지 않은 필터링 형식 cond=" + condition);
         }
     }
