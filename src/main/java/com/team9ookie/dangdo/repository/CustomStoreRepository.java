@@ -59,6 +59,7 @@ public class CustomStoreRepository {
                 .leftJoin(store.storeLinkList, storeLink)
                 .groupBy(store.id);
 
+        BooleanExpression searchFiltering = searchFiltering(condition.getSearch());
         Predicate categoryFiltering = categoryFiltering(condition.getCategories());
         BooleanExpression minPriceExpression = minPrice.goe(condition.getMinPrice());
         BooleanExpression maxPriceExpression = maxPrice.loe(condition.getMaxPrice());
@@ -66,6 +67,7 @@ public class CustomStoreRepository {
         BooleanExpression receiveMethodFiltering = receiveMethodFiltering(condition.getReceive());
 
         query = query.where(
+                searchFiltering,
                 categoryFiltering,
                 platformFiltering,
                 receiveMethodFiltering
@@ -84,6 +86,10 @@ public class CustomStoreRepository {
         };
 
         return query.fetch();
+    }
+
+    private BooleanExpression searchFiltering(String search) {
+        return store.name.like("%" + search + "%");
     }
 
     private Predicate categoryFiltering(List<String> categoryList) {
