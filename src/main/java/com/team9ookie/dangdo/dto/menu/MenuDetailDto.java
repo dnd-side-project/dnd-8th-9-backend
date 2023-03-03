@@ -25,6 +25,8 @@ public class MenuDetailDto {
     private List<String> category;
     private List<FileDto> menuImages;
 
+    public static class MenuDetailDtoBuilder {}
+
     public static MenuDetailDtoBuilder create(Menu menu){
         return MenuDetailDto.builder()
                 .id(menu.getId())

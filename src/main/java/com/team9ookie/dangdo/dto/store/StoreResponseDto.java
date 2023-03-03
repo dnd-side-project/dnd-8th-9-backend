@@ -22,7 +22,7 @@ public class StoreResponseDto {
 
     private String location;
 
-    private int rating;
+    private double rating;
 
     private PriceRange priceRange;
 
@@ -56,6 +56,8 @@ public class StoreResponseDto {
                 .build();
     }
 
+    public static class StoreResponseDtoBuilder {}
+
     public static StoreResponseDtoBuilder create(Store store) {
         return StoreResponseDto.builder()
                 .id(store.getId())
@@ -67,6 +69,21 @@ public class StoreResponseDto {
                 .canPickup(store.isCanPickup())
                 .canDelivery(store.isCanDelivery())
                 .category(new ArrayList<>(Arrays.asList(store.getCategory().split(","))));
+    }
+
+    public static StoreResponseDtoBuilder create(StoreDetailDto dto) {
+        return StoreResponseDto.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .location(dto.getLocation())
+                .rating(dto.getRating())
+                .priceRange(PriceRange.builder().min(dto.getMinPrice()).max(dto.getMaxPrice()).build())
+                .businessHours(dto.getBusinessHours())
+                .orderForm(dto.getOrderForm())
+                .notice(dto.getNotice())
+                .canPickup(dto.isCanPickup())
+                .canDelivery(dto.isCanDelivery())
+                .category(new ArrayList<>(Arrays.asList(dto.getCategory().split(","))));
     }
 
 }

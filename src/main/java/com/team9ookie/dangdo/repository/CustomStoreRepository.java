@@ -1,70 +1,119 @@
 package com.team9ookie.dangdo.repository;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.jpa.JPQLQueryFactory;
 import com.team9ookie.dangdo.dto.store.Platform;
 import com.team9ookie.dangdo.dto.store.StoreConditionDto;
-import com.team9ookie.dangdo.entity.Store;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import com.team9ookie.dangdo.dto.store.StoreDetailDto;
+import com.team9ookie.dangdo.entity.QMenu;
+import com.team9ookie.dangdo.entity.QReview;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.team9ookie.dangdo.entity.QStore.store;
+import static com.team9ookie.dangdo.entity.QStoreLink.storeLink;
+
 @Repository
 @RequiredArgsConstructor
 public class CustomStoreRepository {
 
-    private final EntityManager entityManager;
+    private final JPQLQueryFactory queryFactory;
 
-    public List<Store> findAllByCondition(StoreConditionDto condition) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Store> query = builder.createQuery(Store.class);
-        Root<Store> root = query.from(Store.class);
+    public List<StoreDetailDto> getStoreListByCondition(StoreConditionDto condition) {
 
-        // 카테고리
-        List<String> categoryList = condition.getCategories();
-        if (categoryList != null) {
-            List<Predicate> categoryPredicate = categoryList.stream().map(s -> builder.like(
-                    root.get("category"), "%" + s + "%"
-            )).toList();
-            query = query.where(builder.or(categoryPredicate.toArray(new Predicate[0])));
-        }
+        QMenu menu = QMenu.menu;
+        QReview review = QReview.review;
 
-        // TODO: 메뉴 가격 최소/최대가격 필터링 추가
+        NumberExpression<Double> rating = review.dangdo.avg().multiply(20).ceil();
+        NumberExpression<Integer> minPrice = menu.price.min();
+        NumberExpression<Integer> maxPrice = menu.price.max();
 
+        var query = queryFactory
+                .select(Projections.bean(
+                        StoreDetailDto.class,
+                        store.id,
+                        store.name,
+                        store.location,
+                        rating.as("rating"),
+                        minPrice.as("minPrice"),
+                        maxPrice.as("maxPrice"),
+                        store.businessHours,
+                        store.orderForm,
+                        store.notice,
+                        store.canPickup,
+                        store.canDelivery,
+                        store.category
+                        )
+                )
+                .from(store)
+                .leftJoin(store.menuList, menu)
+                .leftJoin(menu.reviewList, review)
+                .leftJoin(store.storeLinkList, storeLink)
+                .groupBy(store.id);
 
-        // 플랫폼
-        List<String> platformNameList = condition.getPlatforms();
-        if (platformNameList != null) {
-            List<Platform> platformList = platformNameList.stream().map(Platform::findByName).toList();
-            List<Predicate> platformPredicate = platformList
-                    .stream()
-                    .map(s -> root.join("storeLinkList").get("platform").in(s))
-                    .toList();
-            query = query.where(builder.or(platformPredicate.toArray(new Predicate[0])));
-        }
+        BooleanExpression searchFiltering = searchFiltering(condition.getSearch());
+        Predicate categoryFiltering = categoryFiltering(condition.getCategories());
+        BooleanExpression minPriceExpression = minPrice.goe(condition.getMinPrice());
+        BooleanExpression maxPriceExpression = maxPrice.loe(condition.getMaxPrice());
+        BooleanExpression platformFiltering = platformFiltering(condition.getPlatforms());
+        BooleanExpression receiveMethodFiltering = receiveMethodFiltering(condition.getReceive());
 
-        // 수령 방법
-        String receive = condition.getReceive();
-        if (receive != null) {
-            if (receive.equals("canPickup")) {
-                query = query.where(builder.equal(
-                        root.get("canPickup"), true
-                ));
-            } else if (receive.equals("canDelivery")) {
-                query = query.where(builder.equal(
-                        root.get("canDelivery"), true
-                ));
-            }
-        }
+        query = query.where(
+                searchFiltering,
+                categoryFiltering,
+                platformFiltering,
+                receiveMethodFiltering
+        );
 
-        // TODO: 정렬에 당도 높은 순 추가
-        query.orderBy(builder.desc(root.get("id")));
+        query = query.having(
+                minPriceExpression,
+                maxPriceExpression
+        );
 
-        return entityManager.createQuery(query).getResultList();
+        String sort = condition.getSort();
+        query = switch (sort) {
+            case "latest" -> query.orderBy(new OrderSpecifier<>(Order.DESC, store.id));
+            case "dangdo", "recommend" -> query.orderBy(new OrderSpecifier<>(Order.DESC, rating));
+            default -> query;
+        };
+
+        return query.fetch();
+    }
+
+    private BooleanExpression searchFiltering(String search) {
+        return store.name.like("%" + search + "%");
+    }
+
+    private Predicate categoryFiltering(List<String> categoryList) {
+        if (categoryList == null) return null;
+        BooleanBuilder builder = new BooleanBuilder();
+        categoryList.forEach(s -> {
+            builder.or(store.category.like("%" + s + "%"));
+        });
+        return builder.getValue();
+    }
+
+    private BooleanExpression platformFiltering(List<String> platformNameList) {
+        if (platformNameList == null) return null;
+        List<Platform> platformList = platformNameList.stream().map(Platform::findByName).toList();
+        return storeLink.platform.in(platformList);
+    }
+
+    private BooleanExpression receiveMethodFiltering(String receive) {
+        if (receive == null) return null;
+        return switch (receive) {
+            case "canPickup" -> store.canPickup.eq(true);
+            case "canDelivery" -> store.canDelivery.eq(true);
+            default -> null;
+        };
     }
 
 }
