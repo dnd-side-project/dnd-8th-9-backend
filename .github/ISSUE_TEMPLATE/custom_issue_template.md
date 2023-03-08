@@ -7,17 +7,9 @@ assignees: ''
 
 ---
 
----
-name: Feature
-about: 작업 사항 입력
-title: ""
-labels: ""
-assignees: ""
----
-
 | type | title | labels | assignees |
 | :--: | :---: | :----: | :-------: |
-| BUG  | Title |  Bug   |   John    |
+| feature | Title | feature | hyh1016/minje0204 |
 
 ## Description
 
