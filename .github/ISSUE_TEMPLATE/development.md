@@ -1,6 +1,6 @@
 ---
-name: CUSTOM_ISSUE_TEMPLATE
-about: 8기 9조 팀의 이슈 사항 통합 템플릿
+name: DEVELOPMENT
+about: 이슈 템플릿 (개발 사항)
 title: ''
 labels: ''
 assignees: ''
