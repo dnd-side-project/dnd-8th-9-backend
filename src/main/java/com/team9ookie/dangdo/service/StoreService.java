@@ -7,18 +7,17 @@ import com.team9ookie.dangdo.entity.FileEntity;
 import com.team9ookie.dangdo.entity.Store;
 import com.team9ookie.dangdo.entity.StoreLink;
 import com.team9ookie.dangdo.repository.*;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 @Service
 @Slf4j
@@ -41,7 +40,8 @@ public class StoreService {
 
     @Transactional(readOnly = true)
     public List<StoreResponseDto> getAll(StoreConditionDto conditionDto) {
-        List<StoreDetailDto> storeDetailDtoList = customStoreRepository.getStoreListByCondition(conditionDto);
+        Pageable pageable = PageRequest.of(conditionDto.getPage(), 10);
+        List<StoreDetailDto> storeDetailDtoList = customStoreRepository.getStoreListByCondition(conditionDto, pageable);
 
         return storeDetailDtoList.stream().map(dto -> {
             // 업체와 연결된 링크, 파일

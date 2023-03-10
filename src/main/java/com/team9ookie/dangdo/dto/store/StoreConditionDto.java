@@ -29,4 +29,7 @@ public class StoreConditionDto {
     @Builder.Default
     private String sort = "latest";
 
+    @Builder.Default
+    private int page = 0;
+
 }

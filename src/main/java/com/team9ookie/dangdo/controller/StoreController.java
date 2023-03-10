@@ -27,7 +27,12 @@ public class StoreController {
     @GetMapping()
     public ResponseEntity<BaseResponseDto<List<StoreResponseDto>>> getAll(@RequestParam(name = "cond", required = false) String condition) throws JsonProcessingException {
         try {
-            StoreConditionDto conditionDto = objectMapper.readValue(condition, StoreConditionDto.class);
+            StoreConditionDto conditionDto;
+            if (condition == null) {
+                conditionDto = new StoreConditionDto();
+            } else {
+                conditionDto = objectMapper.readValue(condition, StoreConditionDto.class);
+            }
             return ResponseEntity.ok(BaseResponseDto.ok(storeService.getAll(conditionDto)));
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("유효하지 않은 필터링 형식 cond=" + condition);
