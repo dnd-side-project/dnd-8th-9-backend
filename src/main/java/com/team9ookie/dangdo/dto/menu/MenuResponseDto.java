@@ -21,7 +21,9 @@ public class MenuResponseDto {
     private int price;
     private List<FileDto> menuImages;
 
-    public static MenuResponseDtoBuilder create(Menu menu){
+    public static class MenuResponseDtoBuilder {}
+
+    public static MenuResponseDto.MenuResponseDtoBuilder create(Menu menu){
         return MenuResponseDto.builder()
                 .id(menu.getId())
                 .name(menu.getName())

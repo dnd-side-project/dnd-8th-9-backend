@@ -1,7 +1,7 @@
 package com.team9ookie.dangdo.controller;
 
 import com.team9ookie.dangdo.dto.BaseResponseDto;
-import com.team9ookie.dangdo.dto.ReviewRequestDto;
+import com.team9ookie.dangdo.dto.review.ReviewRequestDto;
 import com.team9ookie.dangdo.dto.review.ReviewResponseDto;
 import com.team9ookie.dangdo.service.ReviewService;
 import lombok.RequiredArgsConstructor;
