@@ -14,6 +14,7 @@ import com.team9ookie.dangdo.dto.store.StoreDetailDto;
 import com.team9ookie.dangdo.entity.QMenu;
 import com.team9ookie.dangdo.entity.QReview;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class CustomStoreRepository {
 
     private final JPQLQueryFactory queryFactory;
 
-    public List<StoreDetailDto> getStoreListByCondition(StoreConditionDto condition) {
+    public List<StoreDetailDto> getStoreListByCondition(StoreConditionDto condition, Pageable pageable) {
 
         QMenu menu = QMenu.menu;
         QReview review = QReview.review;
@@ -85,10 +86,16 @@ public class CustomStoreRepository {
             default -> query;
         };
 
-        return query.fetch();
+        List<StoreDetailDto> result = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return result;
     }
 
     private BooleanExpression searchFiltering(String search) {
+        if (search == null) return null;
         return store.name.like("%" + search + "%");
     }
 
