@@ -1,18 +1,22 @@
 package com.team9ookie.dangdo.entity;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+
 @Table(indexes = @Index(name="name_index", columnList = "name"))
 public class Store extends BaseEntity {
 
@@ -29,11 +33,17 @@ public class Store extends BaseEntity {
     @Column
     private String businessHours;
 
-    @Column(columnDefinition = "TEXT")
-    private String orderForm;
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
+    private Map<String, Object> orderForm;
 
-    @Column(columnDefinition = "LONGTEXT")
-    private String notice;
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
+    private Map<String, Object> notice;
+
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
+    private Map<String, Object> info;
 
     @Column
     private boolean canPickup;

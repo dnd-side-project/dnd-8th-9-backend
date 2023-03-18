@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team9ookie.dangdo.dto.BaseResponseDto;
 import com.team9ookie.dangdo.dto.store.StoreConditionDto;
+import com.team9ookie.dangdo.dto.store.StoreListResponseDto;
 import com.team9ookie.dangdo.dto.store.StoreRequestDto;
 import com.team9ookie.dangdo.dto.store.StoreResponseDto;
 import com.team9ookie.dangdo.service.StoreService;
@@ -25,7 +26,7 @@ public class StoreController {
     private final ObjectMapper objectMapper;
 
     @GetMapping()
-    public ResponseEntity<BaseResponseDto<List<StoreResponseDto>>> getAll(@RequestParam(name = "cond", required = false) String condition) throws JsonProcessingException {
+    public ResponseEntity<BaseResponseDto<List<StoreListResponseDto>>> getAll(@RequestParam(name = "cond", required = false) String condition) throws JsonProcessingException {
         try {
             StoreConditionDto conditionDto;
             if (condition == null) {
@@ -50,12 +51,12 @@ public class StoreController {
     }
 
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<BaseResponseDto<Long>> create(@RequestPart StoreRequestDto dto, @RequestPart(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
+    public ResponseEntity<BaseResponseDto<Long>> create(@ModelAttribute StoreRequestDto dto, @RequestParam(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
         return ResponseEntity.ok(BaseResponseDto.ok(storeService.create(dto, fileList)));
     }
 
     @PutMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<BaseResponseDto<StoreResponseDto>> update(@PathVariable long id, @RequestPart StoreRequestDto dto, @RequestPart(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
+    public ResponseEntity<BaseResponseDto<StoreResponseDto>> update(@PathVariable long id, @ModelAttribute StoreRequestDto dto, @RequestParam(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
         return ResponseEntity.ok(BaseResponseDto.ok(storeService.update(id, dto, fileList)));
     }
 

@@ -7,6 +7,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -24,21 +25,25 @@ public class StoreResponseDto {
 
     private double rating;
 
-    private PriceRange priceRange;
+    private int reviewCount;
 
-    private List<StoreLinkDto> links;
+    private PriceRange priceRange;
 
     private String businessHours;
 
-    private String orderForm;
+    private Map<String, Object> orderForm;
 
-    private String notice;
+    private Map<String, Object> notice;
+
+    private Map<String, Object> info;
 
     private boolean canPickup;
 
     private boolean canDelivery;
 
     private List<String> category;
+
+    private List<StoreLinkDto> links;
 
     private List<FileDto> storeImages;
 
@@ -77,10 +82,12 @@ public class StoreResponseDto {
                 .name(dto.getName())
                 .location(dto.getLocation())
                 .rating(dto.getRating())
+                .reviewCount(dto.getReviewCount())
                 .priceRange(PriceRange.builder().min(dto.getMinPrice()).max(dto.getMaxPrice()).build())
                 .businessHours(dto.getBusinessHours())
                 .orderForm(dto.getOrderForm())
                 .notice(dto.getNotice())
+                .info(dto.getInfo())
                 .canPickup(dto.isCanPickup())
                 .canDelivery(dto.isCanDelivery())
                 .category(new ArrayList<>(Arrays.asList(dto.getCategory().split(","))));

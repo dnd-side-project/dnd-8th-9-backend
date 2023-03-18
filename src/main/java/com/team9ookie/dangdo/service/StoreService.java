@@ -39,15 +39,15 @@ public class StoreService {
     private final FileRepository fileRepository;
 
     @Transactional(readOnly = true)
-    public List<StoreResponseDto> getAll(StoreConditionDto conditionDto) {
+    public List<StoreListResponseDto> getAll(StoreConditionDto conditionDto) {
         Pageable pageable = PageRequest.of(conditionDto.getPage(), 10);
-        List<StoreDetailDto> storeDetailDtoList = customStoreRepository.getStoreListByCondition(conditionDto, pageable);
+        List<StoreListDetailDto> storeDetailDtoList = customStoreRepository.getStoreListByCondition(conditionDto, pageable);
 
         return storeDetailDtoList.stream().map(dto -> {
             // 업체와 연결된 링크, 파일
             List<StoreLink> storeLinkList = storeLinkRepository.findAllByStoreId(dto.getId());
             List<FileEntity> fileEntityList = fileRepository.findAllByTypeAndTargetId(FileType.STORE_IMAGE, dto.getId());
-            return StoreResponseDto.create(dto)
+            return StoreListResponseDto.create(dto)
                     .links(storeLinkList.stream().map(StoreLinkDto::of).toList())
                     .storeImages(fileEntityList.stream().map(FileDto::of).toList())
                     .build();
@@ -56,21 +56,12 @@ public class StoreService {
 
     @Transactional(readOnly = true)
     public StoreResponseDto get(long id) {
-        Store store = storeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("업체를 찾을 수 없습니다. id: " + id));
-
-        // 평균 당도 (소수점 한 자리까지 나타냄)
-        int rating = getAverageRating(store.getId());
-
-        // 최소, 최대 메뉴 금액
-        PriceRange priceRange = getPriceRange(store.getId());
+        StoreDetailDto store = customStoreRepository.getStoreById(id);
 
         // 업체와 연결된 링크, 파일
         List<StoreLink> storeLinkList = storeLinkRepository.findAllByStoreId(id);
         List<FileEntity> fileEntityList = fileRepository.findAllByTypeAndTargetId(FileType.STORE_IMAGE, id);
         return StoreResponseDto.create(store)
-                .rating(rating)
-                .priceRange(priceRange)
                 .links(storeLinkList.stream().map(StoreLinkDto::of).toList())
                 .storeImages(fileEntityList.stream().map(FileDto::of).toList())
                 .build();

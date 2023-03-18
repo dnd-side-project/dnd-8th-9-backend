@@ -25,6 +25,9 @@ public class StoreLink extends BaseEntity {
     @Column
     private String url;
 
+    @Column
+    private String role;
+
     @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;

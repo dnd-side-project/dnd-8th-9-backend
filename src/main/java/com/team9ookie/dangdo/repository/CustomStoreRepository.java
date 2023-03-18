@@ -7,10 +7,12 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.JPQLQueryFactory;
 import com.team9ookie.dangdo.dto.store.Platform;
 import com.team9ookie.dangdo.dto.store.StoreConditionDto;
 import com.team9ookie.dangdo.dto.store.StoreDetailDto;
+import com.team9ookie.dangdo.dto.store.StoreListDetailDto;
 import com.team9ookie.dangdo.entity.QMenu;
 import com.team9ookie.dangdo.entity.QReview;
 import lombok.RequiredArgsConstructor;
@@ -28,27 +30,26 @@ public class CustomStoreRepository {
 
     private final JPQLQueryFactory queryFactory;
 
-    public List<StoreDetailDto> getStoreListByCondition(StoreConditionDto condition, Pageable pageable) {
+    public List<StoreListDetailDto> getStoreListByCondition(StoreConditionDto condition, Pageable pageable) {
 
         QMenu menu = QMenu.menu;
         QReview review = QReview.review;
 
         NumberExpression<Double> rating = review.dangdo.avg().multiply(20).ceil();
+        NumberExpression<Integer> reviewCount = review.count().castToNum(Integer.class);
         NumberExpression<Integer> minPrice = menu.price.min();
         NumberExpression<Integer> maxPrice = menu.price.max();
 
-        var query = queryFactory
+        JPQLQuery<StoreListDetailDto> query = queryFactory
                 .select(Projections.bean(
-                        StoreDetailDto.class,
+                        StoreListDetailDto.class,
                         store.id,
                         store.name,
                         store.location,
+                        reviewCount.as("reviewCount"),
                         rating.as("rating"),
                         minPrice.as("minPrice"),
                         maxPrice.as("maxPrice"),
-                        store.businessHours,
-                        store.orderForm,
-                        store.notice,
                         store.canPickup,
                         store.canDelivery,
                         store.category
@@ -86,10 +87,49 @@ public class CustomStoreRepository {
             default -> query;
         };
 
-        List<StoreDetailDto> result = query
+        List<StoreListDetailDto> result = query
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
+        return result;
+    }
+
+    public StoreDetailDto getStoreById(long id) {
+
+        QMenu menu = QMenu.menu;
+        QReview review = QReview.review;
+
+        NumberExpression<Double> rating = review.dangdo.avg().multiply(20).ceil();
+        NumberExpression<Integer> reviewCount = review.count().castToNum(Integer.class);
+        NumberExpression<Integer> minPrice = menu.price.min();
+        NumberExpression<Integer> maxPrice = menu.price.max();
+
+        StoreDetailDto result = queryFactory
+                .select(Projections.bean(
+                        StoreDetailDto.class,
+                        store.id,
+                        store.name,
+                        store.location,
+                        reviewCount.as("reviewCount"),
+                        rating.as("rating"),
+                        minPrice.as("minPrice"),
+                        maxPrice.as("maxPrice"),
+                        store.businessHours,
+                        store.orderForm,
+                        store.notice,
+                        store.info,
+                        store.canPickup,
+                        store.canDelivery,
+                        store.category
+                        )
+                )
+                .from(store)
+                .leftJoin(store.menuList, menu)
+                .leftJoin(menu.reviewList, review)
+                .groupBy(store.id)
+                .where(store.id.eq(id))
+                .fetchOne();
 
         return result;
     }
@@ -122,5 +162,4 @@ public class CustomStoreRepository {
             default -> null;
         };
     }
-
 }
