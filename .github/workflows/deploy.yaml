@@ -7,6 +7,8 @@ on:
   workflow_dispatch:
 
 env:
+  #AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   S3_BUCKET_NAME: dangdo
   RESOURCE_PATH: ./src/main/resources/application.yml
   CODE_DEPLOY_APPLICATION_NAME: dangdo-code-deploy
@@ -15,7 +17,9 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions:
+      id-token: write
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -30,8 +34,16 @@ jobs:
         with:
           files: ${{ env.RESOURCE_PATH }}
         env:
-          override.value: ${{ secrets.DI_FROM_SECRET }}
-          # override.value: 'from deploy.yaml' <-- 이렇게 사용해도 주입이 된다.
+          cloud.aws.credentials.accessKey: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          cloud.aws.credentials.secretKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          cloud.aws.s3.bucket: dangdo
+          spring.datasource.url: ${{ secrets.SPRING_DATASOURCE_URL }} 
+          spring.datasource.username: ${{ secrets.SPRING_DATASOURCE_USERNAME }} 
+          spring.datasource.password: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+          spring.security.oauth2.client.registration.kakao.client-id: ${{ secrets.KAKAO_CLIENT_ID }} 
+          spring.security.oauth2.client.registration.kakao.client-secret: ${{ secrets.KAKAO_CLIENT_SECRET }} 
+          spring.security.oauth2.client.registration.google.redirect-uri: ${{ secrets.KAKAO_REDIRECT_URI }} 
+          app.cors.allowedOrigins: http://localhost:3000, https://dnd-dangdo.netlify.app/
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
@@ -50,7 +62,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ap-northeast-2
 
       - name: Upload to S3
         run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
