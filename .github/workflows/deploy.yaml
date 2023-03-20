@@ -7,6 +7,8 @@ on:
   workflow_dispatch:
 
 env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   S3_BUCKET_NAME: dangdo
   RESOURCE_PATH: ./src/main/resources/application.yml
   CODE_DEPLOY_APPLICATION_NAME: dangdo-code-deploy
@@ -32,16 +34,16 @@ jobs:
         with:
           files: ${{ env.RESOURCE_PATH }}
         env:
-          cloud.aws.credentials.accessKey: ${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESSKEY }}
-          cloud.aws.credentials.secretKey: ${{ secrets.CLOUD_AWS_CREDENTIALS_SECRETKEY }}
-          cloud.aws.s3.bucket: ${{ secrets.S3_BUCKET }}
+          cloud.aws.credentials.accessKey: AWS_ACCESS_KEY_ID
+          cloud.aws.credentials.secretKey: AWS_SECRET_ACCESS_KEY
+          cloud.aws.s3.bucket: dangdo
           spring.datasource.url: ${{ secrets.SPRING_DATASOURCE_URL }} 
           spring.datasource.username: ${{ secrets.SPRING_DATASOURCE_USERNAME }} 
           spring.datasource.password: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
           spring.security.oauth2.client.registration.kakao.client-id: ${{ secrets.KAKAO_CLIENT_ID }} 
           spring.security.oauth2.client.registration.kakao.client-secret: ${{ secrets.KAKAO_CLIENT_SECRET }} 
           spring.security.oauth2.client.registration.google.redirect-uri: ${{ secrets.KAKAO_REDIRECT_URI }} 
-          app.cors.allowedOrigins: ${{ secrets.APP_CORS_ALLOWEDORIGINS }}
+          app.cors.allowedOrigins: http://localhost:3000, https://dnd-dangdo.netlify.app/
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
