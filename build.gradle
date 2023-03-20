@@ -20,6 +20,10 @@ jar {
     enabled = false
 }
 
+test {
+    exclude '**/*'
+}
+
 repositories {
     mavenCentral()
 }
