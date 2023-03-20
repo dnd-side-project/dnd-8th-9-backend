@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   S3_BUCKET_NAME: dangdo
   RESOURCE_PATH: ./src/main/resources/application.yml
   CODE_DEPLOY_APPLICATION_NAME: dangdo-code-deploy
@@ -34,8 +34,8 @@ jobs:
         with:
           files: ${{ env.RESOURCE_PATH }}
         env:
-          cloud.aws.credentials.accessKey: AWS_ACCESS_KEY_ID
-          cloud.aws.credentials.secretKey: AWS_SECRET_ACCESS_KEY
+          cloud.aws.credentials.accessKey: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          cloud.aws.credentials.secretKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           cloud.aws.s3.bucket: dangdo
           spring.datasource.url: ${{ secrets.SPRING_DATASOURCE_URL }} 
           spring.datasource.username: ${{ secrets.SPRING_DATASOURCE_USERNAME }} 
@@ -60,8 +60,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
       - name: Upload to S3
