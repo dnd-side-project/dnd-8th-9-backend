@@ -6,6 +6,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -23,9 +24,11 @@ public class StoreDto {
 
     private String businessHours;
 
-    private String orderForm;
+    private Map<String, Object> orderForm;
 
-    private String notice;
+    private Map<String, Object> notice;
+
+    private Map<String, Object> info;
 
     private boolean canPickup;
 

@@ -17,11 +17,14 @@ public class StoreLinkDto {
 
     private String url;
 
+    private String role;
+
     public StoreLink toEntity() {
         return StoreLink.builder()
                 .id(id)
                 .platform(Platform.findByName(platform))
                 .url(url)
+                .role(role)
                 .build();
     }
 
@@ -30,6 +33,7 @@ public class StoreLinkDto {
                 .id(storeLink.getId())
                 .platform(storeLink.getPlatform().name())
                 .url(storeLink.getUrl())
+                .role(storeLink.getRole())
                 .build();
     }
 

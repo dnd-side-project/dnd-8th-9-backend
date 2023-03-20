@@ -38,7 +38,7 @@ jobs:
         shell: bash
 
       - name: Build with Gradle
-        run: ./gradlew build --no-daemon -x test
+        run: ./gradlew build
         shell: bash
 
       - name: Make zip file

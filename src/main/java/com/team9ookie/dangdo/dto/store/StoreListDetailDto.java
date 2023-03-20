@@ -10,7 +10,7 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StoreDetailDto {
+public class StoreListDetailDto {
 
     private Long id;
 
@@ -25,14 +25,6 @@ public class StoreDetailDto {
     private int minPrice;
 
     private int maxPrice;
-
-    private String businessHours;
-
-    private Map<String, Object> orderForm;
-
-    private Map<String, Object> notice;
-
-    private Map<String, Object> info;
 
     private boolean canPickup;
 
