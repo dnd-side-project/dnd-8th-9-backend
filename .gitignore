@@ -39,3 +39,6 @@ out/
 
 
 /dangdo/mysql/data
+
+### local file ###
+**/src/main/resources/application-local.yml
