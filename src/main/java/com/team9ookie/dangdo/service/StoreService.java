@@ -78,9 +78,10 @@ public class StoreService {
     }
 
     @Transactional
-    public long create(StoreRequestDto dto, List<MultipartFile> fileList) throws Exception {
+    public long create(StoreRequestDto dto) throws Exception {
         Store store = storeRepository.save(dto.toEntity());
 
+        List<MultipartFile> fileList = dto.getFiles();
         if (fileList != null && !fileList.isEmpty()) {
             List<FileEntity> fileEntityList = fileService.createFileList(fileList, FileType.STORE_IMAGE, store.getId());
             fileRepository.saveAll(fileEntityList);
@@ -100,13 +101,14 @@ public class StoreService {
     }
 
     @Transactional
-    public StoreResponseDto update(long id, StoreRequestDto dto, List<MultipartFile> fileList) throws Exception {
+    public StoreResponseDto update(long id, StoreRequestDto dto) throws Exception {
         Store store = storeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("업체를 찾을 수 없습니다. id: " + id));
 
         Store updatedStore = storeRepository.save(dto.toEntity(id));
 
         fileRepository.deleteAllByTypeAndTargetId(FileType.STORE_IMAGE, id);
+        List<MultipartFile> fileList = dto.getFiles();
         List<FileEntity> fileEntityList = new ArrayList<>();
         if (fileList != null && !fileList.isEmpty()) {
             fileEntityList = fileService.createFileList(fileList, FileType.STORE_IMAGE, store.getId());
