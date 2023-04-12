@@ -24,26 +24,21 @@ public class Store extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
     @Column
     private String location;
 
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
+    private Map<String, String> orderForm;
+
     @Column
-    private String businessHours;
+    private String notice;
 
-    @Type(JsonType.class)
-    @Column(columnDefinition = "json")
-    private Map<String, Object> orderForm;
-
-    @Type(JsonType.class)
-    @Column(columnDefinition = "json")
-    private Map<String, Object> notice;
-
-    @Type(JsonType.class)
-    @Column(columnDefinition = "json")
-    private Map<String, Object> info;
+    @Column
+    private String info;
 
     @Column
     private boolean canPickup;

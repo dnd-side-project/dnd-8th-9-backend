@@ -115,7 +115,6 @@ public class CustomStoreRepository {
                         rating.as("rating"),
                         minPrice.as("minPrice"),
                         maxPrice.as("maxPrice"),
-                        store.businessHours,
                         store.orderForm,
                         store.notice,
                         store.info,

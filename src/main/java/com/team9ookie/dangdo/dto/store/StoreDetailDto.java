@@ -26,13 +26,11 @@ public class StoreDetailDto {
 
     private int maxPrice;
 
-    private String businessHours;
+    private Map<String, String> orderForm;
 
-    private Map<String, Object> orderForm;
+    private String notice;
 
-    private Map<String, Object> notice;
-
-    private Map<String, Object> info;
+    private String info;
 
     private boolean canPickup;
 
