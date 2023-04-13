@@ -23,13 +23,11 @@ public class StoreRequestDto {
 
     private List<StoreLinkDto> links;
 
-    private String businessHours;
+    private Map<String, String> orderForm;
 
-    private Map<String, Object> orderForm;
+    private String notice;
 
-    private Map<String, Object> notice;
-
-    private Map<String, Object> info;
+    private String info;
 
     private boolean canPickup;
 
@@ -38,11 +36,13 @@ public class StoreRequestDto {
     @Builder.Default
     private List<String> category = new ArrayList<>();
 
+    @Builder.Default
+    private List<MultipartFile> files = new ArrayList<>();
+
     public Store toEntity() {
         return Store.builder()
                 .name(name)
                 .location(location)
-                .businessHours(businessHours)
                 .orderForm(orderForm)
                 .notice(notice)
                 .canPickup(canPickup)
@@ -56,7 +56,6 @@ public class StoreRequestDto {
                 .id(id)
                 .name(name)
                 .location(location)
-                .businessHours(businessHours)
                 .orderForm(orderForm)
                 .notice(notice)
                 .canPickup(canPickup)

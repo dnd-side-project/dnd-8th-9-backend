@@ -29,13 +29,11 @@ public class StoreResponseDto {
 
     private PriceRange priceRange;
 
-    private String businessHours;
+    private Map<String, String> orderForm;
 
-    private Map<String, Object> orderForm;
+    private String notice;
 
-    private Map<String, Object> notice;
-
-    private Map<String, Object> info;
+    private String info;
 
     private boolean canPickup;
 
@@ -52,7 +50,6 @@ public class StoreResponseDto {
                 .id(id)
                 .name(name)
                 .location(location)
-                .businessHours(businessHours)
                 .orderForm(orderForm)
                 .notice(notice)
                 .canPickup(canPickup)
@@ -68,7 +65,6 @@ public class StoreResponseDto {
                 .id(store.getId())
                 .name(store.getName())
                 .location(store.getLocation())
-                .businessHours(store.getBusinessHours())
                 .orderForm(store.getOrderForm())
                 .notice(store.getNotice())
                 .canPickup(store.isCanPickup())
@@ -84,7 +80,6 @@ public class StoreResponseDto {
                 .rating(dto.getRating())
                 .reviewCount(dto.getReviewCount())
                 .priceRange(PriceRange.builder().min(dto.getMinPrice()).max(dto.getMaxPrice()).build())
-                .businessHours(dto.getBusinessHours())
                 .orderForm(dto.getOrderForm())
                 .notice(dto.getNotice())
                 .info(dto.getInfo())

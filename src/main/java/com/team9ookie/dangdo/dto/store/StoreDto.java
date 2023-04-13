@@ -22,13 +22,11 @@ public class StoreDto {
 
     private String location;
 
-    private String businessHours;
+    private Map<String, String> orderForm;
 
-    private Map<String, Object> orderForm;
+    private String notice;
 
-    private Map<String, Object> notice;
-
-    private Map<String, Object> info;
+    private String info;
 
     private boolean canPickup;
 
@@ -41,7 +39,6 @@ public class StoreDto {
                 .id(id)
                 .name(name)
                 .location(location)
-                .businessHours(businessHours)
                 .orderForm(orderForm)
                 .notice(notice)
                 .canPickup(canPickup)
@@ -55,7 +52,6 @@ public class StoreDto {
                 .id(store.getId())
                 .name(store.getName())
                 .location(store.getLocation())
-                .businessHours(store.getBusinessHours())
                 .orderForm(store.getOrderForm())
                 .notice(store.getNotice())
                 .canPickup(store.isCanPickup())
