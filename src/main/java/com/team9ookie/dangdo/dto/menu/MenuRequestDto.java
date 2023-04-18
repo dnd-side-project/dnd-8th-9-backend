@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
@@ -16,13 +17,11 @@ import java.util.List;
 public class MenuRequestDto {
     private String name;
     private int price;
-    private String caution;
-    private String description;
+    private Map<String,String> basicInfo;
+    private String detailInfo;
     private List<String> category;
-    private String summary;
 
-    //Todo
     public Menu toEntity(Store store) {
-        return Menu.builder().name(name).price(price).caution(caution).description(description).category(String.join(",",category)).summary(summary).store(store).build();
+        return Menu.builder().name(name).price(price).basicInfo(basicInfo).detailInfo(detailInfo).category(String.join(",",category)).store(store).build();
     }
 }

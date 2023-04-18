@@ -1,9 +1,9 @@
 package com.team9ookie.dangdo.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team9ookie.dangdo.dto.BaseResponseDto;
-import com.team9ookie.dangdo.dto.menu.MenuDetailDto;
-import com.team9ookie.dangdo.dto.menu.MenuRequestDto;
-import com.team9ookie.dangdo.dto.menu.MenuResponseDto;
+import com.team9ookie.dangdo.dto.menu.*;
 import com.team9ookie.dangdo.service.MenuService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -19,20 +19,31 @@ import java.util.List;
 public class MenuController {
 
     private final MenuService menuService;
+    private final ObjectMapper objectMapper;
+
+    @GetMapping("/all")
+    public ResponseEntity<BaseResponseDto<List<MenuResponseListDto>>> findAll(@RequestParam(name = "cond", required = false) String condition) {
+        try {
+            MenuConditionDto conditionDto;
+            if (condition == null) {
+                conditionDto = new MenuConditionDto();
+            } else {
+                conditionDto = objectMapper.readValue(condition, MenuConditionDto.class);
+            }
+            return ResponseEntity.ok(BaseResponseDto.ok(menuService.findAll(conditionDto)));
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("유효하지 않은 필터링 형식 cond=" + condition);
+        }
+    }
 
     @GetMapping("")
-    public ResponseEntity<BaseResponseDto<List<MenuResponseDto>>> findAll(@PathVariable Long storeId) {
-        return ResponseEntity.ok(BaseResponseDto.ok(menuService.findAll(storeId)));
+    public ResponseEntity<BaseResponseDto<List<MenuResponseDto>>> findAllByStoreId(@PathVariable Long storeId) {
+        return ResponseEntity.ok(BaseResponseDto.ok(menuService.findAllByStoreId(storeId)));
     }
 
     @GetMapping("/{menuId}")
-    public ResponseEntity<BaseResponseDto<MenuDetailDto>> findById(@PathVariable Long menuId) {
+    public ResponseEntity<BaseResponseDto<MenuResponseDto>> findById(@PathVariable Long menuId) {
         return ResponseEntity.ok(BaseResponseDto.ok(menuService.findById(menuId)));
-    }
-
-    @GetMapping(params = "name")
-    public ResponseEntity<BaseResponseDto<List<MenuResponseDto>>> searchMenusByName(@RequestParam String name) {
-        return ResponseEntity.ok(BaseResponseDto.ok(menuService.searchMenusByName(name)));
     }
 
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
