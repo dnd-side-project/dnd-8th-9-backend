@@ -50,7 +50,7 @@ spring:
               - account_email
             client-name: Kakao
             authorization-grant-type: authorization_code
-            redirect-uri: ${kakao.redirect-uri}
+            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
             client-authentication-method: POST
         provider :
           kakao:
