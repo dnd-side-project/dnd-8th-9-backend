@@ -5,6 +5,7 @@ import com.team9ookie.dangdo.dto.review.ReviewRequestDto;
 import com.team9ookie.dangdo.dto.review.ReviewResponseDto;
 import com.team9ookie.dangdo.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,9 +30,9 @@ public class ReviewController {
         return ResponseEntity.ok(BaseResponseDto.ok(reviewService.get(reviewId)));
     }
 
-    @PostMapping
-    public ResponseEntity<BaseResponseDto<Long>> create(@PathVariable long menuId, @RequestPart ReviewRequestDto dto, @RequestParam(name = "files", required = false) List<MultipartFile> fileList) throws IOException {
-        return ResponseEntity.ok(BaseResponseDto.ok(reviewService.create(menuId, dto, fileList)));
+    @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<BaseResponseDto<Long>> create(@PathVariable long menuId, @ModelAttribute ReviewRequestDto dto) throws IOException {
+        return ResponseEntity.ok(BaseResponseDto.ok(reviewService.create(menuId, dto)));
     }
 
     @DeleteMapping("/{reviewId}")

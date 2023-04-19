@@ -54,7 +54,8 @@ public class ReviewService {
     }
 
     @Transactional
-    public long create(long menuId, ReviewRequestDto dto, List<MultipartFile> fileList) throws IOException {
+    public long create(long menuId, ReviewRequestDto dto) throws IOException {
+        List<MultipartFile> fileList = dto.getFiles();
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new IllegalArgumentException("메뉴를 찾을 수 없습니다. id: " + menuId));
         Review review = reviewRepository.save(dto.toEntity(menu));
