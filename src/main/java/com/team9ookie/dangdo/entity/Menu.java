@@ -1,13 +1,16 @@
 package com.team9ookie.dangdo.entity;
 
 import com.team9ookie.dangdo.dto.menu.MenuRequestDto;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
@@ -27,14 +30,12 @@ public class Menu extends BaseEntity {
     @Column
     private int price;
 
-    @Column(columnDefinition = "TEXT")
-    private String caution;
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
+    private Map<String,String> basicInfo;
 
     @Column(columnDefinition = "TEXT")
-    private String description;
-
-    @Column(columnDefinition = "TEXT")
-    private String summary;
+    private String detailInfo;
     @Column
     private String category;
 
@@ -48,8 +49,8 @@ public class Menu extends BaseEntity {
     public void update(MenuRequestDto requestDto, Store store) {
         this.name = requestDto.getName();
         this.price = requestDto.getPrice();
-        this.caution = requestDto.getCaution();
-        this.description = requestDto.getDescription();
+        this.basicInfo = requestDto.getBasicInfo();
+        this.detailInfo = requestDto.getDetailInfo();
         this.category = String.join(",", requestDto.getCategory());
         this.store = store;
     }

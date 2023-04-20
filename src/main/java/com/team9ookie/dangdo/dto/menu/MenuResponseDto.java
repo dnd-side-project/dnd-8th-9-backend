@@ -7,7 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
@@ -17,9 +19,11 @@ public class MenuResponseDto {
 
     private Long id;
     private String name;
-    private String summary;
-    private int price;
+    private int basePrice;
+    private List<String> category;
     private List<FileDto> menuImages;
+    private Map<String, String> basicInfo;
+    private String detailInfo;
 
     public static class MenuResponseDtoBuilder {}
 
@@ -27,7 +31,9 @@ public class MenuResponseDto {
         return MenuResponseDto.builder()
                 .id(menu.getId())
                 .name(menu.getName())
-                .price(menu.getPrice())
-                .summary(menu.getSummary());
+                .basePrice(menu.getPrice())
+                .category(Arrays.stream(menu.getCategory().split(",")).toList())
+                .basicInfo(menu.getBasicInfo())
+                .detailInfo(menu.getDetailInfo());
     }
 }
