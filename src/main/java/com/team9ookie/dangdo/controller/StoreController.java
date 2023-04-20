@@ -3,6 +3,7 @@ package com.team9ookie.dangdo.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team9ookie.dangdo.dto.BaseResponseDto;
+import com.team9ookie.dangdo.dto.review.ReviewResponseDto;
 import com.team9ookie.dangdo.dto.store.StoreConditionDto;
 import com.team9ookie.dangdo.dto.store.StoreListResponseDto;
 import com.team9ookie.dangdo.dto.store.StoreRequestDto;
@@ -57,6 +58,11 @@ public class StoreController {
     @DeleteMapping("/{id}")
     public ResponseEntity<BaseResponseDto<Long>> delete(@PathVariable long id) {
         return ResponseEntity.ok(BaseResponseDto.ok(storeService.delete(id)));
+    }
+
+    @GetMapping("/{id}/reviews")
+    public ResponseEntity<BaseResponseDto<List<ReviewResponseDto>>> getReviewList(@PathVariable long id) {
+        return ResponseEntity.ok(BaseResponseDto.ok(storeService.getReviewList(id)));
     }
 
 }

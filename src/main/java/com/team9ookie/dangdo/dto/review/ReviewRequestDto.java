@@ -2,6 +2,7 @@ package com.team9ookie.dangdo.dto.review;
 
 import com.team9ookie.dangdo.entity.Menu;
 import com.team9ookie.dangdo.entity.Review;
+import com.team9ookie.dangdo.entity.Store;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,21 +26,13 @@ public class ReviewRequestDto {
 
     private List<MultipartFile> files;
 
-    public Review toEntity() {
+    public Review toEntity(Store store, Menu menu) {
         return Review.builder()
                 .content(content)
                 .dangdo(dangdo)
                 .goodPoint(GoodPoint.findByMessage(goodPoint))
                 .reorder(isReorder())
-                .build();
-    }
-
-    public Review toEntity(Menu menu) {
-        return Review.builder()
-                .content(content)
-                .dangdo(dangdo)
-                .goodPoint(GoodPoint.findByMessage(goodPoint))
-                .reorder(isReorder())
+                .store(store)
                 .menu(menu)
                 .build();
     }

@@ -7,6 +7,7 @@ import com.team9ookie.dangdo.dto.review.ReviewResponseDto;
 import com.team9ookie.dangdo.entity.FileEntity;
 import com.team9ookie.dangdo.entity.Menu;
 import com.team9ookie.dangdo.entity.Review;
+import com.team9ookie.dangdo.entity.Store;
 import com.team9ookie.dangdo.repository.FileRepository;
 import com.team9ookie.dangdo.repository.MenuRepository;
 import com.team9ookie.dangdo.repository.ReviewRepository;
@@ -34,9 +35,13 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public List<ReviewResponseDto> getAll(long menuId) {
+        Menu menu = menuRepository.findById(menuId)
+                .orElseThrow(() -> new IllegalArgumentException("없는 메뉴입니다. id=" + menuId));
+        String menuName = menu.getName();
         List<Review> reviewList = reviewRepository.findByMenuId(menuId);
         return reviewList.stream().map(review -> {
             ReviewResponseDto reviewResponseDto = ReviewResponseDto.of(review);
+            reviewResponseDto.setMenuName(menuName);
             List<FileEntity> fileEntityList = fileRepository.findAllByTypeAndTargetId(FileType.REVIEW_IMAGE, review.getId());
             reviewResponseDto.setReviewImages(fileEntityList.stream().map(FileDto::of).toList());
             return reviewResponseDto;
@@ -47,7 +52,9 @@ public class ReviewService {
     public ReviewResponseDto get(long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("후기를 찾을 수 없습니다. id: " + reviewId));
+        String menuName = review.getMenu().getName();
         ReviewResponseDto reviewResponseDto = ReviewResponseDto.of(review);
+        reviewResponseDto.setMenuName(menuName);
         List<FileEntity> fileEntityList = fileRepository.findAllByTypeAndTargetId(FileType.REVIEW_IMAGE, review.getId());
         reviewResponseDto.setReviewImages(fileEntityList.stream().map(FileDto::of).toList());
         return reviewResponseDto;
@@ -58,7 +65,8 @@ public class ReviewService {
         List<MultipartFile> fileList = dto.getFiles();
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new IllegalArgumentException("메뉴를 찾을 수 없습니다. id: " + menuId));
-        Review review = reviewRepository.save(dto.toEntity(menu));
+        Store store = menu.getStore();
+        Review review = reviewRepository.save(dto.toEntity(store, menu));
 
         List<FileEntity> fileEntityList = fileService.createFileList(fileList, FileType.REVIEW_IMAGE, review.getId());
         fileRepository.saveAll(fileEntityList);
