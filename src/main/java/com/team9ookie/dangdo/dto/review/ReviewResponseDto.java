@@ -16,6 +16,8 @@ public class ReviewResponseDto {
 
     private long id;
 
+    private String menuName;
+
     private String content;
 
     private int dangdo;

@@ -31,6 +31,10 @@ public class Review extends BaseEntity {
     private boolean reorder;
 
     @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
+
+    @ManyToOne
     @JoinColumn(name = "menu_id")
     private Menu menu;
 

@@ -50,6 +50,9 @@ public class Store extends BaseEntity {
     private String category;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+    private List<Review> reviewList;
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
     private List<Menu> menuList;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
