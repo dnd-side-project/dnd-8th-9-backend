@@ -27,19 +27,14 @@ public class StoreService {
     private final FileService fileService;
 
     private final StoreRepository storeRepository;
-
     private final MenuRepository menuRepository;
-
     private final ReviewRepository reviewRepository;
-
     private final StoreLinkRepository storeLinkRepository;
-
     private final CustomStoreRepository customStoreRepository;
-
     private final FileRepository fileRepository;
 
     @Transactional(readOnly = true)
-    public List<StoreListResponseDto> getAll(StoreConditionDto conditionDto) {
+    public List<StoreListResponseDto> findAll(StoreConditionDto conditionDto) {
         Pageable pageable = PageRequest.of(conditionDto.getPage(), 10);
         List<StoreListDetailDto> storeDetailDtoList = customStoreRepository.getStoreListByCondition(conditionDto, pageable);
 
@@ -55,7 +50,7 @@ public class StoreService {
     }
 
     @Transactional(readOnly = true)
-    public StoreResponseDto get(long id) {
+    public StoreResponseDto findById(long id) {
         StoreDetailDto store = customStoreRepository.getStoreById(id);
 
         // 업체와 연결된 링크, 파일
@@ -65,16 +60,6 @@ public class StoreService {
                 .links(storeLinkList.stream().map(StoreLinkDto::of).toList())
                 .storeImages(fileEntityList.stream().map(FileDto::of).toList())
                 .build();
-    }
-
-    @Transactional(readOnly = true)
-    public List<StoreResponseDto> searchStoresByName(String name) {
-        List<Store> storeList = storeRepository.findByNameContainingIgnoreCase(name);
-
-        return storeList.stream().map(store -> {
-            List<FileEntity> storeImages = fileRepository.findAllByTypeAndTargetId(FileType.MENU_IMAGE, store.getId());
-            return StoreResponseDto.create(store).storeImages(storeImages.stream().map(FileDto::of).toList()).build();
-        }).toList();
     }
 
     @Transactional

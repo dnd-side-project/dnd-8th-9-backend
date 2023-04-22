@@ -27,9 +27,10 @@ public class MenuService {
     private final StoreService storeService;
     private final FileService fileService;
     private final CustomMenuRepository customMenuRepository;
+
     @Transactional
-    public Long save(MenuRequestDto requestDto, long storeId, List<MultipartFile> fileList) throws Exception {
-        Store store = storeService.get(storeId).toEntity();
+    public Long save(MenuRequestDto requestDto, List<MultipartFile> fileList) throws Exception {
+        Store store = storeService.findById(requestDto.getStoreId()).toEntity();
         Long id = menuRepository.save(requestDto.toEntity(store)).getId();
 
         if (fileList != null && !fileList.isEmpty()) {
@@ -60,7 +61,7 @@ public class MenuService {
     }
 
     @Transactional(readOnly = true)
-    public List<MenuResponseDto> findAllByStoreId(Long storeId) {
+    public List<MenuResponseDto> findByStoreId(Long storeId) {
         List<Menu> menuList = menuRepository.findByStore_Id(storeId);
 
         return menuList.stream().map(menu -> {
@@ -69,21 +70,11 @@ public class MenuService {
         }).toList();
     }
 
-    @Transactional(readOnly = true)
-    public List<MenuResponseDto> searchMenusByName(String name) {
-        List<Menu> menuList = menuRepository.findByNameContainingIgnoreCase(name);
-
-        return menuList.stream().map(menu -> {
-            List<FileEntity> menuImages = fileRepository.findAllByTypeAndTargetId(FileType.MENU_IMAGE, menu.getId());
-            return MenuResponseDto.create(menu).menuImages(menuImages.stream().map(FileDto::of).toList()).build();
-        }).toList();
-    }
-
     @Transactional
-    public Long update(Long menuId, Long storeId, MenuRequestDto requestDto, List<MultipartFile> fileList) throws Exception {
+    public Long update(Long menuId, MenuRequestDto requestDto, List<MultipartFile> fileList) throws Exception {
         Menu menu = menuRepository.findById(menuId).orElseThrow(() -> new IllegalArgumentException("해당 메뉴가 없습니다. id=" + menuId));
 
-        Store store = storeService.get(storeId).toEntity();
+        Store store = storeService.findById(requestDto.getStoreId()).toEntity();
         menu.update(requestDto, store);
 
         fileRepository.deleteAllByTypeAndTargetId(FileType.MENU_IMAGE, menuId);

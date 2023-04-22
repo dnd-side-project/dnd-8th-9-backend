@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team9ookie.dangdo.dto.BaseResponseDto;
 import com.team9ookie.dangdo.dto.menu.*;
+import com.team9ookie.dangdo.dto.review.ReviewResponseDto;
 import com.team9ookie.dangdo.service.MenuService;
+import com.team9ookie.dangdo.service.ReviewService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +16,15 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/stores/{storeId}/menus")
+@RequestMapping("/menus")
 @AllArgsConstructor
 public class MenuController {
 
     private final MenuService menuService;
+    private final ReviewService reviewService;
     private final ObjectMapper objectMapper;
 
-    @GetMapping("/all")
+    @GetMapping("")
     public ResponseEntity<BaseResponseDto<List<MenuResponseListDto>>> findAll(@RequestParam(name = "cond", required = false) String condition) {
         try {
             MenuConditionDto conditionDto;
@@ -36,28 +39,29 @@ public class MenuController {
         }
     }
 
-    @GetMapping("")
-    public ResponseEntity<BaseResponseDto<List<MenuResponseDto>>> findAllByStoreId(@PathVariable Long storeId) {
-        return ResponseEntity.ok(BaseResponseDto.ok(menuService.findAllByStoreId(storeId)));
-    }
-
-    @GetMapping("/{menuId}")
-    public ResponseEntity<BaseResponseDto<MenuResponseDto>> findById(@PathVariable Long menuId) {
-        return ResponseEntity.ok(BaseResponseDto.ok(menuService.findById(menuId)));
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponseDto<MenuResponseDto>> findById(@PathVariable long id) {
+        return ResponseEntity.ok(BaseResponseDto.ok(menuService.findById(id)));
     }
 
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<BaseResponseDto<Long>> save(@PathVariable Long storeId, @RequestPart MenuRequestDto dto, @RequestPart(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
-        return ResponseEntity.ok(BaseResponseDto.ok(menuService.save(dto, storeId, fileList)));
+    public ResponseEntity<BaseResponseDto<Long>> save(@RequestPart MenuRequestDto dto, @RequestPart(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
+        return ResponseEntity.ok(BaseResponseDto.ok(menuService.save(dto, fileList)));
     }
 
-    @PutMapping(value = "/{menuId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<BaseResponseDto<Long>> update(@PathVariable Long storeId, @PathVariable Long menuId, @RequestPart MenuRequestDto dto, @RequestPart(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
-        return ResponseEntity.ok(BaseResponseDto.ok(menuService.update(menuId, storeId, dto, fileList)));
+    @PutMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<BaseResponseDto<Long>> update(@PathVariable long id, @RequestPart MenuRequestDto dto, @RequestPart(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
+        return ResponseEntity.ok(BaseResponseDto.ok(menuService.update(id, dto, fileList)));
     }
 
-    @DeleteMapping("/{menuId}")
-    public ResponseEntity<BaseResponseDto<Long>> delete(@PathVariable Long menuId) {
-        return ResponseEntity.ok(BaseResponseDto.ok(menuService.delete(menuId)));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponseDto<Long>> delete(@PathVariable long id) {
+        return ResponseEntity.ok(BaseResponseDto.ok(menuService.delete(id)));
     }
+
+    @GetMapping("/{id}/reviews")
+    public ResponseEntity<BaseResponseDto<List<ReviewResponseDto>>> findReviewList(@PathVariable long id) {
+        return ResponseEntity.ok(BaseResponseDto.ok(reviewService.findByMenuId(id)));
+    }
+
 }

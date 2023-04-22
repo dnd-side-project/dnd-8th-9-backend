@@ -26,6 +26,10 @@ public class ReviewRequestDto {
 
     private List<MultipartFile> files;
 
+    private long storeId;
+
+    private long menuId;
+
     public Review toEntity(Store store, Menu menu) {
         return Review.builder()
                 .content(content)
