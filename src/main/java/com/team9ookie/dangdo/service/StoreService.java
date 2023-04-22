@@ -2,6 +2,7 @@ package com.team9ookie.dangdo.service;
 
 import com.team9ookie.dangdo.dto.file.FileDto;
 import com.team9ookie.dangdo.dto.file.FileType;
+import com.team9ookie.dangdo.dto.review.ReviewResponseDto;
 import com.team9ookie.dangdo.dto.store.*;
 import com.team9ookie.dangdo.entity.FileEntity;
 import com.team9ookie.dangdo.entity.Store;
@@ -152,6 +153,16 @@ public class StoreService {
         int minPrice = priceRange.get("minPrice");
         int maxPrice = priceRange.get("maxPrice");
         return PriceRange.builder().min(minPrice).max(maxPrice).build();
+    }
+
+    public List<ReviewResponseDto> getReviewList(long id) {
+        Store store = storeRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("업체를 찾을 수 없습니다. id: " + id));
+        return store.getReviewList().stream().map(review -> {
+            ReviewResponseDto dto = ReviewResponseDto.of(review);
+            dto.setMenuName(review.getMenu().getName());
+            return dto;
+        }).toList();
     }
 
 }
