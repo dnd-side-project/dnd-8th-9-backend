@@ -82,4 +82,7 @@ public class ReviewService {
         return review.getId();
     }
 
+    public List<ReviewResponseDto> findAll() {
+        return reviewRepository.findAll().stream().map(ReviewResponseDto::of).toList();
+    }
 }

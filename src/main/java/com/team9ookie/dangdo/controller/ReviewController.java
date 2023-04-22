@@ -20,8 +20,13 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping
-    public ResponseEntity<BaseResponseDto<List<ReviewResponseDto>>> getAll(@PathVariable long menuId) {
+    public ResponseEntity<BaseResponseDto<List<ReviewResponseDto>>> getAllByMenuId(@PathVariable long menuId) {
         return ResponseEntity.ok(BaseResponseDto.ok(reviewService.getAll(menuId)));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<BaseResponseDto<List<ReviewResponseDto>>> getAll() {
+        return ResponseEntity.ok(BaseResponseDto.ok(reviewService.findAll()));
     }
 
     @GetMapping("/{reviewId}")
