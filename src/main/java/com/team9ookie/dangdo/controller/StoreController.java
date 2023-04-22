@@ -3,11 +3,14 @@ package com.team9ookie.dangdo.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team9ookie.dangdo.dto.BaseResponseDto;
+import com.team9ookie.dangdo.dto.menu.MenuResponseDto;
 import com.team9ookie.dangdo.dto.review.ReviewResponseDto;
 import com.team9ookie.dangdo.dto.store.StoreConditionDto;
 import com.team9ookie.dangdo.dto.store.StoreListResponseDto;
 import com.team9ookie.dangdo.dto.store.StoreRequestDto;
 import com.team9ookie.dangdo.dto.store.StoreResponseDto;
+import com.team9ookie.dangdo.service.MenuService;
+import com.team9ookie.dangdo.service.ReviewService;
 import com.team9ookie.dangdo.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -22,11 +25,12 @@ import java.util.List;
 public class StoreController {
 
     private final StoreService storeService;
-
+    private final MenuService menuService;
+    private final ReviewService reviewService;
     private final ObjectMapper objectMapper;
 
-    @GetMapping()
-    public ResponseEntity<BaseResponseDto<List<StoreListResponseDto>>> getAll(@RequestParam(name = "cond", required = false) String condition) {
+    @GetMapping("")
+    public ResponseEntity<BaseResponseDto<List<StoreListResponseDto>>> findAll(@RequestParam(name = "cond", required = false) String condition) {
         try {
             StoreConditionDto conditionDto;
             if (condition == null) {
@@ -34,15 +38,15 @@ public class StoreController {
             } else {
                 conditionDto = objectMapper.readValue(condition, StoreConditionDto.class);
             }
-            return ResponseEntity.ok(BaseResponseDto.ok(storeService.getAll(conditionDto)));
+            return ResponseEntity.ok(BaseResponseDto.ok(storeService.findAll(conditionDto)));
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("유효하지 않은 필터링 형식 cond=" + condition);
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponseDto<StoreResponseDto>> get(@PathVariable long id) {
-        return ResponseEntity.ok(BaseResponseDto.ok(storeService.get(id)));
+    public ResponseEntity<BaseResponseDto<StoreResponseDto>> findById(@PathVariable long id) {
+        return ResponseEntity.ok(BaseResponseDto.ok(storeService.findById(id)));
     }
 
     @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -60,9 +64,14 @@ public class StoreController {
         return ResponseEntity.ok(BaseResponseDto.ok(storeService.delete(id)));
     }
 
+    @GetMapping("/{id}/menus")
+    public ResponseEntity<BaseResponseDto<List<MenuResponseDto>>> findMenuList(@PathVariable long id) {
+        return ResponseEntity.ok(BaseResponseDto.ok(menuService.findByStoreId(id)));
+    }
+
     @GetMapping("/{id}/reviews")
-    public ResponseEntity<BaseResponseDto<List<ReviewResponseDto>>> getReviewList(@PathVariable long id) {
-        return ResponseEntity.ok(BaseResponseDto.ok(storeService.getReviewList(id)));
+    public ResponseEntity<BaseResponseDto<List<ReviewResponseDto>>> findReviewList(@PathVariable long id) {
+        return ResponseEntity.ok(BaseResponseDto.ok(reviewService.findByStoreId(id)));
     }
 
 }

@@ -11,6 +11,7 @@ import com.team9ookie.dangdo.entity.Store;
 import com.team9ookie.dangdo.repository.FileRepository;
 import com.team9ookie.dangdo.repository.MenuRepository;
 import com.team9ookie.dangdo.repository.ReviewRepository;
+import com.team9ookie.dangdo.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,14 +28,33 @@ public class ReviewService {
 
     private final FileService fileService;
 
-    private final ReviewRepository reviewRepository;
-
+    private final StoreRepository storeRepository;
     private final MenuRepository menuRepository;
+    private final ReviewRepository reviewRepository;
 
     private final FileRepository fileRepository;
 
     @Transactional(readOnly = true)
-    public List<ReviewResponseDto> getAll(long menuId) {
+    public List<ReviewResponseDto> findAll() {
+        return reviewRepository.findAll().stream().map(ReviewResponseDto::of).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReviewResponseDto> findByStoreId(long storeId) {
+        List<Review> reviewList = reviewRepository.findByStoreId(storeId);
+        return reviewList.stream().map(review -> {
+            ReviewResponseDto reviewResponseDto = ReviewResponseDto.of(review);
+            Menu menu = review.getMenu();
+            String menuName = menu.getName();
+            reviewResponseDto.setMenuName(menuName);
+            List<FileEntity> fileEntityList = fileRepository.findAllByTypeAndTargetId(FileType.REVIEW_IMAGE, review.getId());
+            reviewResponseDto.setReviewImages(fileEntityList.stream().map(FileDto::of).toList());
+            return reviewResponseDto;
+        }).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReviewResponseDto> findByMenuId(long menuId) {
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new IllegalArgumentException("없는 메뉴입니다. id=" + menuId));
         String menuName = menu.getName();
@@ -49,9 +69,9 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public ReviewResponseDto get(long reviewId) {
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("후기를 찾을 수 없습니다. id: " + reviewId));
+    public ReviewResponseDto findById(long id) {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("후기를 찾을 수 없습니다. id: " + id));
         String menuName = review.getMenu().getName();
         ReviewResponseDto reviewResponseDto = ReviewResponseDto.of(review);
         reviewResponseDto.setMenuName(menuName);
@@ -61,8 +81,9 @@ public class ReviewService {
     }
 
     @Transactional
-    public long create(long menuId, ReviewRequestDto dto) throws IOException {
+    public long create(ReviewRequestDto dto) throws IOException {
         List<MultipartFile> fileList = dto.getFiles();
+        long menuId = dto.getMenuId();
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new IllegalArgumentException("메뉴를 찾을 수 없습니다. id: " + menuId));
         Store store = menu.getStore();
@@ -82,7 +103,4 @@ public class ReviewService {
         return review.getId();
     }
 
-    public List<ReviewResponseDto> findAll() {
-        return reviewRepository.findAll().stream().map(ReviewResponseDto::of).toList();
-    }
 }

@@ -20,6 +20,7 @@ public class MenuRequestDto {
     private Map<String,String> basicInfo;
     private String detailInfo;
     private List<String> category;
+    private long storeId;
 
     public Menu toEntity(Store store) {
         return Menu.builder().name(name).price(price).basicInfo(basicInfo).detailInfo(detailInfo).category(String.join(",",category)).store(store).build();

@@ -2,7 +2,6 @@ package com.team9ookie.dangdo.service;
 
 import com.team9ookie.dangdo.dto.file.FileDto;
 import com.team9ookie.dangdo.dto.file.FileType;
-import com.team9ookie.dangdo.dto.review.ReviewResponseDto;
 import com.team9ookie.dangdo.dto.store.*;
 import com.team9ookie.dangdo.entity.FileEntity;
 import com.team9ookie.dangdo.entity.Store;
@@ -28,19 +27,14 @@ public class StoreService {
     private final FileService fileService;
 
     private final StoreRepository storeRepository;
-
     private final MenuRepository menuRepository;
-
     private final ReviewRepository reviewRepository;
-
     private final StoreLinkRepository storeLinkRepository;
-
     private final CustomStoreRepository customStoreRepository;
-
     private final FileRepository fileRepository;
 
     @Transactional(readOnly = true)
-    public List<StoreListResponseDto> getAll(StoreConditionDto conditionDto) {
+    public List<StoreListResponseDto> findAll(StoreConditionDto conditionDto) {
         Pageable pageable = PageRequest.of(conditionDto.getPage(), 10);
         List<StoreListDetailDto> storeDetailDtoList = customStoreRepository.getStoreListByCondition(conditionDto, pageable);
 
@@ -56,7 +50,7 @@ public class StoreService {
     }
 
     @Transactional(readOnly = true)
-    public StoreResponseDto get(long id) {
+    public StoreResponseDto findById(long id) {
         StoreDetailDto store = customStoreRepository.getStoreById(id);
 
         // 업체와 연결된 링크, 파일
@@ -66,16 +60,6 @@ public class StoreService {
                 .links(storeLinkList.stream().map(StoreLinkDto::of).toList())
                 .storeImages(fileEntityList.stream().map(FileDto::of).toList())
                 .build();
-    }
-
-    @Transactional(readOnly = true)
-    public List<StoreResponseDto> searchStoresByName(String name) {
-        List<Store> storeList = storeRepository.findByNameContainingIgnoreCase(name);
-
-        return storeList.stream().map(store -> {
-            List<FileEntity> storeImages = fileRepository.findAllByTypeAndTargetId(FileType.MENU_IMAGE, store.getId());
-            return StoreResponseDto.create(store).storeImages(storeImages.stream().map(FileDto::of).toList()).build();
-        }).toList();
     }
 
     @Transactional
@@ -153,16 +137,6 @@ public class StoreService {
         int minPrice = priceRange.get("minPrice");
         int maxPrice = priceRange.get("maxPrice");
         return PriceRange.builder().min(minPrice).max(maxPrice).build();
-    }
-
-    public List<ReviewResponseDto> getReviewList(long id) {
-        Store store = storeRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("업체를 찾을 수 없습니다. id: " + id));
-        return store.getReviewList().stream().map(review -> {
-            ReviewResponseDto dto = ReviewResponseDto.of(review);
-            dto.setMenuName(review.getMenu().getName());
-            return dto;
-        }).toList();
     }
 
 }
