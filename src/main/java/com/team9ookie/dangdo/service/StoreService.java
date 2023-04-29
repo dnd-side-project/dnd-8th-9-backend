@@ -3,9 +3,7 @@ package com.team9ookie.dangdo.service;
 import com.team9ookie.dangdo.dto.file.FileDto;
 import com.team9ookie.dangdo.dto.file.FileType;
 import com.team9ookie.dangdo.dto.store.*;
-import com.team9ookie.dangdo.entity.FileEntity;
-import com.team9ookie.dangdo.entity.Store;
-import com.team9ookie.dangdo.entity.StoreLink;
+import com.team9ookie.dangdo.entity.*;
 import com.team9ookie.dangdo.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +30,7 @@ public class StoreService {
     private final StoreLinkRepository storeLinkRepository;
     private final CustomStoreRepository customStoreRepository;
     private final FileRepository fileRepository;
+    private final StoreBookmarkRepository storeBookmarkRepository;
 
     @Transactional(readOnly = true)
     public List<StoreListResponseDto> findAll(StoreConditionDto conditionDto) {
@@ -126,6 +125,25 @@ public class StoreService {
                 .orElseThrow(() -> new IllegalArgumentException("업체를 찾을 수 없습니다. id: " + id));
         storeRepository.deleteById(store.getId());
         return store.getId();
+    }
+
+    @Transactional
+    public long createBookmark(long id, User user) {
+        Store store = storeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("업체를 찾을 수 없습니다. id: " + id));
+        StoreBookmark storeBookmark = StoreBookmark.builder()
+                .store(store)
+                .user(user)
+                .build();
+        StoreBookmark newEntity = storeBookmarkRepository.save(storeBookmark);
+        return newEntity.getId();
+    }
+
+    @Transactional
+    public long deleteBookmark(long id, User user) {
+        StoreBookmark storeBookmark = storeBookmarkRepository.findByUserIdAndStoreId(user.getId(), id);
+        storeBookmarkRepository.delete(storeBookmark);
+        return storeBookmark.getId();
     }
 
     private int getAverageRating(Long storeId) {

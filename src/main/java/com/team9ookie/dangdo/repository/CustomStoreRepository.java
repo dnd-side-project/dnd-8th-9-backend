@@ -15,6 +15,7 @@ import com.team9ookie.dangdo.dto.store.StoreDetailDto;
 import com.team9ookie.dangdo.dto.store.StoreListDetailDto;
 import com.team9ookie.dangdo.entity.QMenu;
 import com.team9ookie.dangdo.entity.QReview;
+import com.team9ookie.dangdo.entity.QStoreBookmark;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -36,7 +37,8 @@ public class CustomStoreRepository {
         QReview review = QReview.review;
 
         NumberExpression<Double> rating = review.dangdo.avg().multiply(20).ceil();
-        NumberExpression<Integer> reviewCount = review.count().castToNum(Integer.class);
+        NumberExpression<Integer> reviewCount = store.reviewList.size().castToNum(Integer.class);;
+        NumberExpression<Integer> bookmarkCount = store.storeBookmarkList.size().castToNum(Integer.class);
         NumberExpression<Integer> minPrice = menu.price.min();
         NumberExpression<Integer> maxPrice = menu.price.max();
 
@@ -47,6 +49,7 @@ public class CustomStoreRepository {
                         store.name,
                         store.location,
                         reviewCount.as("reviewCount"),
+                        bookmarkCount.as("bookmarkCount"),
                         rating.as("rating"),
                         minPrice.as("minPrice"),
                         maxPrice.as("maxPrice"),
@@ -67,12 +70,14 @@ public class CustomStoreRepository {
         BooleanExpression maxPriceExpression = maxPrice.loe(condition.getMaxPrice());
         BooleanExpression platformFiltering = platformFiltering(condition.getPlatforms());
         BooleanExpression receiveMethodFiltering = receiveMethodFiltering(condition.getReceive());
+        BooleanExpression userFiltering = userFiltering(condition.getUserId());
 
         query = query.where(
                 searchFiltering,
                 categoryFiltering,
                 platformFiltering,
-                receiveMethodFiltering
+                receiveMethodFiltering,
+                userFiltering
         );
 
         query = query.having(
@@ -160,5 +165,16 @@ public class CustomStoreRepository {
             case "canDelivery" -> store.canDelivery.eq(true);
             default -> null;
         };
+    }
+
+    private BooleanExpression userFiltering(long userId) {
+        if (userId == 0) return null;
+        QStoreBookmark storeBookmark = QStoreBookmark.storeBookmark;
+        List<Long> storeList = queryFactory
+                .select(storeBookmark.store.id)
+                .from(storeBookmark)
+                .where(storeBookmark.user.id.eq(userId))
+                .fetch();
+        return store.id.in(storeList);
     }
 }

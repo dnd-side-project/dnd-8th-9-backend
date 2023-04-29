@@ -12,6 +12,7 @@ import com.querydsl.jpa.JPQLQueryFactory;
 import com.team9ookie.dangdo.dto.menu.MenuConditionDto;
 import com.team9ookie.dangdo.dto.menu.MenuListDetailDto;
 import com.team9ookie.dangdo.dto.store.Platform;
+import com.team9ookie.dangdo.entity.QMenuBookmark;
 import com.team9ookie.dangdo.entity.QReview;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -32,21 +33,23 @@ public class CustomMenuRepository {
 
         QReview review = QReview.review;
         NumberExpression<Double> rating = review.dangdo.avg().multiply(20).ceil();
-        NumberExpression<Integer> reviewCount = review.count().castToNum(Integer.class);
+        NumberExpression<Integer> reviewCount = menu.reviewList.size().castToNum(Integer.class);
+        NumberExpression<Integer> bookmarkCount = menu.menuBookmarkList.size().castToNum(Integer.class);
 
         JPQLQuery<MenuListDetailDto> query = queryFactory
                 .select(Projections.bean(
-                                MenuListDetailDto.class,
-                                menu.id,
-                                menu.name,
-                                menu.category,
-                                menu.price,
-                                rating.as("rating"),
-                                reviewCount.as("reviewCount"),
-                                store.id.as("storeId"),
-                                store.name.as("storeName"),
-                                store.canPickup,
-                                store.canDelivery
+                        MenuListDetailDto.class,
+                        menu.id,
+                        menu.name,
+                        menu.category,
+                        menu.price,
+                        rating.as("rating"),
+                        reviewCount.as("reviewCount"),
+                        bookmarkCount.as("bookmarkCount"),
+                        store.id.as("storeId"),
+                        store.name.as("storeName"),
+                        store.canPickup,
+                        store.canDelivery
                         )
                 )
                 .from(menu)
@@ -61,6 +64,7 @@ public class CustomMenuRepository {
         BooleanExpression maxPriceExpression = menu.price.loe(condition.getMaxPrice());
         BooleanExpression platformFiltering = platformFiltering(condition.getPlatforms());
         BooleanExpression receiveMethodFiltering = receiveMethodFiltering(condition.getReceive());
+        BooleanExpression userFiltering = userFiltering(condition.getUserId());
 
         query = query.where(
                 searchFiltering,
@@ -68,7 +72,8 @@ public class CustomMenuRepository {
                 platformFiltering,
                 receiveMethodFiltering,
                 minPriceExpression,
-                maxPriceExpression
+                maxPriceExpression,
+                userFiltering
         );
 
         String sort = condition.getSort();
@@ -85,6 +90,7 @@ public class CustomMenuRepository {
 
         return result;
     }
+
     private BooleanExpression searchFiltering(String search) {
         if (search == null) return null;
         return menu.name.like("%" + search + "%");
@@ -113,4 +119,16 @@ public class CustomMenuRepository {
             default -> null;
         };
     }
+
+    private BooleanExpression userFiltering(long userId) {
+        if (userId == 0) return null;
+        QMenuBookmark menuBookmark = QMenuBookmark.menuBookmark;
+        List<Long> menuList = queryFactory
+                .select(menuBookmark.menu.id)
+                .from(menuBookmark)
+                .where(menuBookmark.user.id.eq(userId))
+                .fetch();
+        return menu.id.in(menuList);
+    }
+
 }

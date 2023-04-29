@@ -32,4 +32,6 @@ public class StoreConditionDto {
     @Builder.Default
     private int page = 0;
 
+    private long userId;
+
 }
