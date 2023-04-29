@@ -46,6 +46,9 @@ public class Menu extends BaseEntity {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
     private List<Review> reviewList;
 
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
+    private List<MenuBookmark> menuBookmarkList;
+
     public void update(MenuRequestDto requestDto, Store store) {
         this.name = requestDto.getName();
         this.price = requestDto.getPrice();

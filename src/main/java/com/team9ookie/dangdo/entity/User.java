@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -26,5 +28,11 @@ public class User extends BaseEntity {
 
     @Column
     private boolean active;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<StoreBookmark> storeBookmarkList;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<MenuBookmark> menuBookmarkList;
 
 }
