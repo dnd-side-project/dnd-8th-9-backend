@@ -1,6 +1,5 @@
 package com.team9ookie.dangdo.dto.menu;
 
-import com.team9ookie.dangdo.dto.store.StoreListDetailDto;
 import lombok.*;
 
 @Getter
@@ -21,6 +20,8 @@ public class MenuListDetailDto {
     private double rating;
 
     private int reviewCount;
+
+    private int bookmarkCount;
 
     private Long storeId;
 

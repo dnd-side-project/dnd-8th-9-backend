@@ -2,8 +2,6 @@ package com.team9ookie.dangdo.dto.store;
 
 import lombok.*;
 
-import java.util.Map;
-
 @Getter
 @Setter
 @ToString
@@ -21,6 +19,8 @@ public class StoreListDetailDto {
     private double rating;
 
     private int reviewCount;
+
+    private int bookmarkCount;
 
     private int minPrice;
 

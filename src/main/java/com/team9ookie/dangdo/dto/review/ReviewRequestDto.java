@@ -6,6 +6,7 @@ import com.team9ookie.dangdo.entity.Store;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -24,7 +25,7 @@ public class ReviewRequestDto {
 
     private boolean reorder;
 
-    private List<MultipartFile> files;
+    private List<MultipartFile> files = new ArrayList<>();
 
     private long storeId;
 

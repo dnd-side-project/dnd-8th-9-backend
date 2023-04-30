@@ -58,4 +58,7 @@ public class Store extends BaseEntity {
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
     private List<StoreLink> storeLinkList;
 
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+    private List<StoreBookmark> storeBookmarkList;
+
 }

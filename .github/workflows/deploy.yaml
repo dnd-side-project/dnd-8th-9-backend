@@ -44,7 +44,9 @@ jobs:
           spring.security.oauth2.client.registration.kakao.client-secret: ${{ secrets.KAKAO_CLIENT_SECRET }} 
           spring.security.oauth2.client.registration.google.redirect-uri: ${{ secrets.KAKAO_REDIRECT_URI }} 
           app.cors.allowedOrigins: http://localhost:3000, https://dnd-dangdo.netlify.app/
-
+          app.auth.tokenSecret: ${{ secrets.AUTH_TOKENSECRET }}
+          jwt.secret: ${{ secrets.JWT_SECRET }}
+          
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
         shell: bash
