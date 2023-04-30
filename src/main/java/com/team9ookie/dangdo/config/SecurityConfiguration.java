@@ -1,15 +1,24 @@
 package com.team9ookie.dangdo.config;
 
 import com.team9ookie.dangdo.auth.CustomOAuth2UserService;
-import com.team9ookie.dangdo.auth.OAuth2AuthenticationFailureHandler;
-import com.team9ookie.dangdo.auth.OAuth2AuthenticationSuccessHandler;
-import com.team9ookie.dangdo.auth.OAuth2AuthorizationRequestBasedOnCookieRepository;
+import com.team9ookie.dangdo.auth.handler.OAuth2AuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Optional;
 
 @Configuration
 @RequiredArgsConstructor
