@@ -3,11 +3,10 @@ package com.team9ookie.dangdo.service;
 import com.team9ookie.dangdo.dto.file.FileDto;
 import com.team9ookie.dangdo.dto.file.FileType;
 import com.team9ookie.dangdo.dto.menu.*;
-import com.team9ookie.dangdo.entity.FileEntity;
-import com.team9ookie.dangdo.entity.Menu;
-import com.team9ookie.dangdo.entity.Store;
+import com.team9ookie.dangdo.entity.*;
 import com.team9ookie.dangdo.repository.CustomMenuRepository;
 import com.team9ookie.dangdo.repository.FileRepository;
+import com.team9ookie.dangdo.repository.MenuBookmarkRepository;
 import com.team9ookie.dangdo.repository.MenuRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +26,7 @@ public class MenuService {
     private final StoreService storeService;
     private final FileService fileService;
     private final CustomMenuRepository customMenuRepository;
+    private final MenuBookmarkRepository menuBookmarkRepository;
 
     @Transactional
     public Long save(MenuRequestDto requestDto, List<MultipartFile> fileList) throws Exception {
@@ -96,4 +96,24 @@ public class MenuService {
         menuRepository.delete(menu);
         return id;
     }
+
+    @Transactional
+    public long createBookmark(long id, User user) {
+        Menu menu = menuRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 메뉴가 없습니다. id=" + id));
+        MenuBookmark menuBookmark = MenuBookmark.builder()
+                .menu(menu)
+                .user(user)
+                .build();
+        MenuBookmark newEntity = menuBookmarkRepository.save(menuBookmark);
+        return newEntity.getId();
+    }
+
+    @Transactional
+    public long deleteBookmark(long id, User user) {
+        MenuBookmark menuBookmark = menuBookmarkRepository.findByUserIdAndMenuId(user.getId(), id);
+        menuBookmarkRepository.delete(menuBookmark);
+        return menuBookmark.getId();
+    }
+
 }

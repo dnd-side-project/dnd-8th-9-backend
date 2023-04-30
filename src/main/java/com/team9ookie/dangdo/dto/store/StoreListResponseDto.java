@@ -1,13 +1,11 @@
 package com.team9ookie.dangdo.dto.store;
 
 import com.team9ookie.dangdo.dto.file.FileDto;
-import com.team9ookie.dangdo.entity.Store;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -26,6 +24,8 @@ public class StoreListResponseDto {
     private double rating;
 
     private int reviewCount;
+
+    private int bookmarkCount;
 
     private PriceRange priceRange;
 
@@ -48,6 +48,7 @@ public class StoreListResponseDto {
                 .location(dto.getLocation())
                 .rating(dto.getRating())
                 .reviewCount(dto.getReviewCount())
+                .bookmarkCount(dto.getBookmarkCount())
                 .priceRange(PriceRange.builder().min(dto.getMinPrice()).max(dto.getMaxPrice()).build())
                 .canPickup(dto.isCanPickup())
                 .canDelivery(dto.isCanDelivery())

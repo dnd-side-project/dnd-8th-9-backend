@@ -22,6 +22,10 @@ public class MenuResponseListDto {
 
     private List<FileDto> menuImages;
 
+    private int reviewCount;
+
+    private int bookmarkCount;
+
     private Long storeId;
 
     private String storeName;
@@ -35,6 +39,8 @@ public class MenuResponseListDto {
                 .id(dto.getId())
                 .name(dto.getName())
                 .price(dto.getPrice())
+                .reviewCount(dto.getReviewCount())
+                .bookmarkCount(dto.getBookmarkCount())
                 .storeId(dto.getStoreId())
                 .storeName(dto.getStoreName())
                 .canPickup(dto.isCanPickup())

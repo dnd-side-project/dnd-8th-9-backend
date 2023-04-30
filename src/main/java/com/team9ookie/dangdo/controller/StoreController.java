@@ -2,6 +2,7 @@ package com.team9ookie.dangdo.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team9ookie.dangdo.auth.userinfo.PrincipalDetails;
 import com.team9ookie.dangdo.dto.BaseResponseDto;
 import com.team9ookie.dangdo.dto.menu.MenuResponseDto;
 import com.team9ookie.dangdo.dto.review.ReviewResponseDto;
@@ -9,14 +10,18 @@ import com.team9ookie.dangdo.dto.store.StoreConditionDto;
 import com.team9ookie.dangdo.dto.store.StoreListResponseDto;
 import com.team9ookie.dangdo.dto.store.StoreRequestDto;
 import com.team9ookie.dangdo.dto.store.StoreResponseDto;
+import com.team9ookie.dangdo.entity.User;
 import com.team9ookie.dangdo.service.MenuService;
 import com.team9ookie.dangdo.service.ReviewService;
 import com.team9ookie.dangdo.service.StoreService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -72,6 +77,20 @@ public class StoreController {
     @GetMapping("/{id}/reviews")
     public ResponseEntity<BaseResponseDto<List<ReviewResponseDto>>> findReviewList(@PathVariable long id) {
         return ResponseEntity.ok(BaseResponseDto.ok(reviewService.findByStoreId(id)));
+    }
+
+    @PostMapping("/{id}/bookmarks")
+    public ResponseEntity<BaseResponseDto<Long>> createBookmark(Principal principal, @PathVariable long id) {
+        if (principal == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        User user = ((PrincipalDetails) ((OAuth2AuthenticationToken) principal).getPrincipal()).getUser();
+        return ResponseEntity.ok(BaseResponseDto.ok(storeService.createBookmark(id, user)));
+    }
+
+    @DeleteMapping("/{id}/bookmarks")
+    public ResponseEntity<BaseResponseDto<Long>> deleteBookmark(Principal principal, @PathVariable long id) {
+        if (principal == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        User user = ((PrincipalDetails) ((OAuth2AuthenticationToken) principal).getPrincipal()).getUser();
+        return ResponseEntity.ok(BaseResponseDto.ok(storeService.deleteBookmark(id, user)));
     }
 
 }
