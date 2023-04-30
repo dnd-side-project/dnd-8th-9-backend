@@ -2,6 +2,7 @@ package com.team9ookie.dangdo.auth.filter;
 
 import com.team9ookie.dangdo.auth.token.AuthToken;
 import com.team9ookie.dangdo.auth.token.AuthTokenProvider;
+import com.team9ookie.dangdo.auth.util.HeaderUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
