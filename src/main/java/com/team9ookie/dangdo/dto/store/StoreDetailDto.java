@@ -22,6 +22,8 @@ public class StoreDetailDto {
 
     private int reviewCount;
 
+    private Map<String, Integer> reviewStats;
+
     private int minPrice;
 
     private int maxPrice;

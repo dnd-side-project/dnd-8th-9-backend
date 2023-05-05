@@ -37,7 +37,7 @@ public class CustomStoreRepository {
         QReview review = QReview.review;
 
         NumberExpression<Double> rating = review.dangdo.avg().multiply(20).ceil();
-        NumberExpression<Integer> reviewCount = store.reviewList.size().castToNum(Integer.class);;
+        NumberExpression<Integer> reviewCount = store.reviewList.size().castToNum(Integer.class);
         NumberExpression<Integer> bookmarkCount = store.storeBookmarkList.size().castToNum(Integer.class);
         NumberExpression<Integer> minPrice = menu.price.min();
         NumberExpression<Integer> maxPrice = menu.price.max();

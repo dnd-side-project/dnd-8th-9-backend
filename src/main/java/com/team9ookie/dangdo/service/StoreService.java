@@ -29,6 +29,7 @@ public class StoreService {
     private final ReviewRepository reviewRepository;
     private final StoreLinkRepository storeLinkRepository;
     private final CustomStoreRepository customStoreRepository;
+    private final CustomReviewRepository customReviewRepository;
     private final FileRepository fileRepository;
     private final StoreBookmarkRepository storeBookmarkRepository;
 
@@ -51,6 +52,8 @@ public class StoreService {
     @Transactional(readOnly = true)
     public StoreResponseDto findById(long id) {
         StoreDetailDto store = customStoreRepository.getStoreById(id);
+        Map<String, Integer> reviewStats = customReviewRepository.findReviewStats(id);
+        store.setReviewStats(reviewStats);
 
         // 업체와 연결된 링크, 파일
         List<StoreLink> storeLinkList = storeLinkRepository.findAllByStoreId(id);
