@@ -1,4 +1,4 @@
-package com.team9ookie.dangdo.auth;
+package com.team9ookie.dangdo.auth.handler;
 
 import com.team9ookie.dangdo.utils.CookieUtil;
 import jakarta.servlet.ServletException;
