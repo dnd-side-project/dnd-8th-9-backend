@@ -11,10 +11,12 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequ
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.util.Assert;
 
+import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.REFRESH_TOKEN;
+
 public class OAuth2AuthorizationRequestBasedOnCookieRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
     public final static String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect_uri";
     private final static int cookieExpireSeconds = 180;
-
+    public final static String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
     private static final String DEFAULT_AUTHORIZATION_REQUEST_ATTR_NAME = HttpSessionOAuth2AuthorizationRequestRepository.class
             .getName() + ".AUTHORIZATION_REQUEST";
 
@@ -70,5 +72,11 @@ public class OAuth2AuthorizationRequestBasedOnCookieRepository implements Author
     private OAuth2AuthorizationRequest getAuthorizationRequest(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         return (session != null) ? (OAuth2AuthorizationRequest) session.getAttribute(this.sessionAttributeName) : null;
+    }
+
+    public void removeAuthorizationRequestCookies(HttpServletRequest request, HttpServletResponse response) {
+        CookieUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
+        CookieUtil.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME);
+        CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
     }
 }

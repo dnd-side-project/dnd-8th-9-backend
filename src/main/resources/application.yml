@@ -80,3 +80,9 @@ spring:
 app:
   cors:
     allowedOrigins: ${cors.allowedOrigins}
+  auth:
+    tokenSecret: ${auth.tokenSecret}
+    tokenExpiry: 1800000
+    refreshTokenExpiry: 604800000
+  # jwt secret key 설정
+jwt.secret: ${jwt.secret}
