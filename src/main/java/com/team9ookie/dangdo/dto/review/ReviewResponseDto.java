@@ -30,6 +30,8 @@ public class ReviewResponseDto {
 
     private String storeName;
 
+    private String nickname;
+
     private List<FileDto> reviewImages;
 
     public static ReviewResponseDto of(Review review) {
@@ -42,6 +44,7 @@ public class ReviewResponseDto {
                 .reorder(review.isReorder())
                 .storeId(review.getStore().getId())
                 .storeName(review.getStore().getName())
+                .nickname(review.getUser().getNickname())
                 .build();
     }
 
