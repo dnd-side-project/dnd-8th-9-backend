@@ -26,21 +26,17 @@ public class UserController {
 
     private final UserService userService;
 
-    private final AppProperties appProperties;
     private final StoreBookmarkService storeBookmarkService;
     private final MenuBookmarkService menuBookmarkService;
 
     @GetMapping
-    public ApiResponse getUser() {
-        System.out.println(appProperties.getAuth().getTokenSecret());
-        System.out.println(appProperties.getAuth().getTokenExpiry());
-        System.out.println(appProperties.getAuth().getRefreshTokenExpiry());
+    public ResponseEntity<BaseResponseDto<User>> getUser() {
 
         org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         User user = userService.getUser(principal.getUsername());
 
-        return ApiResponse.success("user", user);
+        return ResponseEntity.ok(BaseResponseDto.ok(user));
     }
 
     @GetMapping("/store-bookmarks")
@@ -63,5 +59,4 @@ public class UserController {
 
         return ResponseEntity.ok(BaseResponseDto.ok(menuBookmarkService.findMarkedMenuList(user)));
     }
-
 }

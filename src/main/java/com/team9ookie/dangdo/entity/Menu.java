@@ -39,6 +39,9 @@ public class Menu extends BaseEntity {
     @Column
     private String category;
 
+    @Column
+    private String description;
+
     @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;
