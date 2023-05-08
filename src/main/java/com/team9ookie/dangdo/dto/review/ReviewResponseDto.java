@@ -32,6 +32,8 @@ public class ReviewResponseDto {
 
     private String nickname;
 
+    private String profileImage;
+
     private List<FileDto> reviewImages;
 
     public static ReviewResponseDto of(Review review) {
@@ -45,6 +47,7 @@ public class ReviewResponseDto {
                 .storeId(review.getStore().getId())
                 .storeName(review.getStore().getName())
                 .nickname(review.getUser().getNickname())
+                .profileImage(review.getUser().getProfileImg())
                 .build();
     }
 
