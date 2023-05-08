@@ -36,7 +36,12 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public List<ReviewResponseDto> findAll() {
-        return reviewRepository.findAll().stream().map(ReviewResponseDto::of).toList();
+        return reviewRepository.findAll().stream().map(review -> {
+            ReviewResponseDto reviewResponseDto = ReviewResponseDto.of(review);
+            List<FileEntity> fileEntityList = fileRepository.findAllByTypeAndTargetId(FileType.REVIEW_IMAGE, review.getId());
+            reviewResponseDto.setReviewImages(fileEntityList.stream().map(FileDto::of).toList());
+            return reviewResponseDto;
+        }).toList();
     }
 
     @Transactional(readOnly = true)
