@@ -27,6 +27,8 @@ public class StoreResponseDto {
 
     private int reviewCount;
 
+    private Map<String, Integer> reviewStats;
+
     private PriceRange priceRange;
 
     private Map<String, String> orderForm;
@@ -79,6 +81,7 @@ public class StoreResponseDto {
                 .location(dto.getLocation())
                 .rating(dto.getRating())
                 .reviewCount(dto.getReviewCount())
+                .reviewStats(dto.getReviewStats())
                 .priceRange(PriceRange.builder().min(dto.getMinPrice()).max(dto.getMaxPrice()).build())
                 .orderForm(dto.getOrderForm())
                 .notice(dto.getNotice())
