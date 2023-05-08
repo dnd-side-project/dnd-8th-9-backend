@@ -1,15 +1,11 @@
 package com.team9ookie.dangdo.dto.menu;
 
-import com.team9ookie.dangdo.dto.file.FileDto;
 import com.team9ookie.dangdo.entity.Menu;
+import com.team9ookie.dangdo.entity.Store;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 @Getter
 @Builder
@@ -18,22 +14,22 @@ import java.util.Map;
 public class MenuResponseDto {
 
     private Long id;
+    private Long storeId;
+    private String storeName;
     private String name;
     private int basePrice;
-    private List<String> category;
-    private List<FileDto> menuImages;
-    private Map<String, String> basicInfo;
-    private String detailInfo;
+    private String desc;
 
     public static class MenuResponseDtoBuilder {}
 
     public static MenuResponseDto.MenuResponseDtoBuilder create(Menu menu){
+        Store store = menu.getStore();
         return MenuResponseDto.builder()
                 .id(menu.getId())
+                .storeId(store.getId())
+                .storeName(store.getName())
                 .name(menu.getName())
                 .basePrice(menu.getPrice())
-                .category(Arrays.stream(menu.getCategory().split(",")).toList())
-                .basicInfo(menu.getBasicInfo())
-                .detailInfo(menu.getDetailInfo());
+                .desc(menu.getDescription());
     }
 }

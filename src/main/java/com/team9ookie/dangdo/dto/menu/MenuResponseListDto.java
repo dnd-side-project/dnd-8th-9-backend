@@ -1,6 +1,8 @@
 package com.team9ookie.dangdo.dto.menu;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team9ookie.dangdo.dto.file.FileDto;
+import com.team9ookie.dangdo.dto.store.StoreLinkDto;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -17,22 +19,25 @@ public class MenuResponseListDto {
 
     private Long id;
     private String name;
+    @JsonIgnore
     private List<String> category;
     private int price;
 
-    private List<FileDto> menuImages;
-
+    private List<FileDto> menuImage;
+    @JsonIgnore
     private int reviewCount;
-
+    @JsonIgnore
     private int bookmarkCount;
 
     private Long storeId;
 
     private String storeName;
-
+    @JsonIgnore
     private boolean canPickup;
-
+    @JsonIgnore
     private boolean canDelivery;
+
+    private List<StoreLinkDto> links;
 
     public static MenuResponseListDtoBuilder create(MenuListDetailDto dto) {
         return MenuResponseListDto.builder()

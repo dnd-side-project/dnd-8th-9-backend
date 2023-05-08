@@ -3,10 +3,7 @@ package com.team9ookie.dangdo.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team9ookie.dangdo.dto.BaseResponseDto;
-import com.team9ookie.dangdo.dto.menu.MenuConditionDto;
-import com.team9ookie.dangdo.dto.menu.MenuRequestDto;
-import com.team9ookie.dangdo.dto.menu.MenuResponseDto;
-import com.team9ookie.dangdo.dto.menu.MenuResponseListDto;
+import com.team9ookie.dangdo.dto.menu.*;
 import com.team9ookie.dangdo.dto.review.ReviewResponseDto;
 import com.team9ookie.dangdo.entity.User;
 import com.team9ookie.dangdo.service.MenuService;
@@ -47,7 +44,7 @@ public class MenuController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponseDto<MenuResponseDto>> findById(@PathVariable long id) {
+    public ResponseEntity<BaseResponseDto<MenuDetailDto>> findById(@PathVariable long id) {
         return ResponseEntity.ok(BaseResponseDto.ok(menuService.findById(id)));
     }
 
