@@ -1,7 +1,9 @@
 package com.team9ookie.dangdo.entity;
 
 
+import com.team9ookie.dangdo.auth.RoleType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,6 +32,11 @@ public class User extends BaseEntity {
     private String profileImg;
     @Column
     private boolean active;
+
+    @Column(name = "ROLE_TYPE", length = 20)
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private RoleType roleType;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<StoreBookmark> storeBookmarkList;

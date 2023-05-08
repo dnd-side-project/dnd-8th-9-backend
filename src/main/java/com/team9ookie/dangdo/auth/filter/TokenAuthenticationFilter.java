@@ -30,8 +30,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         if (token.validate()) {
             Authentication authentication = tokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } else {
-            response.setStatus(HttpStatus.FORBIDDEN.value());
         }
         filterChain.doFilter(request, response);
     }

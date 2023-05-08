@@ -1,5 +1,6 @@
 package com.team9ookie.dangdo.auth.userinfo;
 
+import com.team9ookie.dangdo.auth.RoleType;
 import com.team9ookie.dangdo.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,6 +41,7 @@ public class OAuthAttributes {
                 .nickname(nickname)
                 .profileImg(profileImg)
                 .active(true)
+                .roleType(RoleType.USER)
                 .build();
     }
 }
