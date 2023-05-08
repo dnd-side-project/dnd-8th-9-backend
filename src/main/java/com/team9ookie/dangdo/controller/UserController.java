@@ -26,9 +26,6 @@ public class UserController {
 
     private final UserService userService;
 
-    private final StoreBookmarkService storeBookmarkService;
-    private final MenuBookmarkService menuBookmarkService;
-
     @GetMapping
     public ResponseEntity<BaseResponseDto<User>> getUser() {
 
@@ -37,26 +34,5 @@ public class UserController {
         User user = userService.getUser(principal.getUsername());
 
         return ResponseEntity.ok(BaseResponseDto.ok(user));
-    }
-
-    @GetMapping("/store-bookmarks")
-    public ResponseEntity<BaseResponseDto<List<StoreListResponseDto>>> findStoreBookmarkList() {
-        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-
-        User user = userService.getUser(principal.getUsername());
-
-        return ResponseEntity.ok(BaseResponseDto.ok(storeBookmarkService.findMarkedStoreList(user)));
-    }
-
-    @GetMapping("/menu-bookmarks")
-    public ResponseEntity<BaseResponseDto<List<MenuResponseListDto>>> findMenuBookmarkList() {
-        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-
-        User user = userService.getUser(principal.getUsername());
-
-        return ResponseEntity.ok(BaseResponseDto.ok(menuBookmarkService.findMarkedMenuList(user)));
     }
 }

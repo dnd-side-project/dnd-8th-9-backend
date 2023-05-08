@@ -27,6 +27,8 @@ public class User extends BaseEntity {
     private String nickname;
 
     @Column
+    private String profileImg;
+    @Column
     private boolean active;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
