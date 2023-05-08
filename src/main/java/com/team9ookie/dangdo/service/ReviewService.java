@@ -1,8 +1,8 @@
 package com.team9ookie.dangdo.service;
 
-import com.team9ookie.dangdo.dto.review.ReviewRequestDto;
 import com.team9ookie.dangdo.dto.file.FileDto;
 import com.team9ookie.dangdo.dto.file.FileType;
+import com.team9ookie.dangdo.dto.review.ReviewRequestDto;
 import com.team9ookie.dangdo.dto.review.ReviewResponseDto;
 import com.team9ookie.dangdo.entity.FileEntity;
 import com.team9ookie.dangdo.entity.Menu;
@@ -36,7 +36,12 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public List<ReviewResponseDto> findAll() {
-        return reviewRepository.findAll().stream().map(ReviewResponseDto::of).toList();
+        return reviewRepository.findAll().stream().map(review -> {
+            ReviewResponseDto reviewResponseDto = ReviewResponseDto.of(review);
+            List<FileEntity> fileEntityList = fileRepository.findAllByTypeAndTargetId(FileType.REVIEW_IMAGE, review.getId());
+            reviewResponseDto.setReviewImages(fileEntityList.stream().map(FileDto::of).toList());
+            return reviewResponseDto;
+        }).toList();
     }
 
     @Transactional(readOnly = true)
@@ -44,9 +49,6 @@ public class ReviewService {
         List<Review> reviewList = reviewRepository.findByStoreId(storeId);
         return reviewList.stream().map(review -> {
             ReviewResponseDto reviewResponseDto = ReviewResponseDto.of(review);
-            Menu menu = review.getMenu();
-            String menuName = menu.getName();
-            reviewResponseDto.setMenuName(menuName);
             List<FileEntity> fileEntityList = fileRepository.findAllByTypeAndTargetId(FileType.REVIEW_IMAGE, review.getId());
             reviewResponseDto.setReviewImages(fileEntityList.stream().map(FileDto::of).toList());
             return reviewResponseDto;

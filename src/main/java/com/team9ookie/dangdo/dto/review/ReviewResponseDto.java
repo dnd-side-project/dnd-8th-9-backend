@@ -26,15 +26,25 @@ public class ReviewResponseDto {
 
     private boolean reorder;
 
+    private long storeId;
+
+    private String storeName;
+
+    private String nickname;
+
     private List<FileDto> reviewImages;
 
     public static ReviewResponseDto of(Review review) {
         return ReviewResponseDto.builder()
                 .id(review.getId())
+                .menuName(review.getMenu().getName())
                 .content(review.getContent())
                 .dangdo(review.getDangdo())
                 .goodPoint(review.getGoodPoint().getMessage())
                 .reorder(review.isReorder())
+                .storeId(review.getStore().getId())
+                .storeName(review.getStore().getName())
+                .nickname(review.getUser().getNickname())
                 .build();
     }
 

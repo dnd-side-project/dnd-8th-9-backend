@@ -38,4 +38,8 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
 }
