@@ -1,11 +1,12 @@
 package com.team9ookie.dangdo.dto.store;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team9ookie.dangdo.entity.Store;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,23 +16,30 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class StoreRequestDto {
 
     private String name;
 
     private String location;
 
-    private List<StoreLinkDto> links;
+    private String phone;
 
-    private Map<String, String> orderForm;
+    private int minOrderDue;
+
+    private Map<String, String> businessHours = new LinkedHashMap<>();
+
+    private List<StoreLinkDto> links = new ArrayList<>();
+
+    private Map<String, String> orderForm = new LinkedHashMap<>();
 
     private String notice;
 
     private String info;
 
-    private boolean canPickup;
+    private boolean canPickup = false;
 
-    private boolean canDelivery;
+    private boolean canDelivery = false;
 
     @Builder.Default
     private List<String> category = new ArrayList<>();
@@ -43,6 +51,9 @@ public class StoreRequestDto {
         return Store.builder()
                 .name(name)
                 .location(location)
+                .phone(phone)
+                .minOrderDue(minOrderDue)
+                .businessHours(businessHours)
                 .orderForm(orderForm)
                 .notice(notice)
                 .canPickup(canPickup)
@@ -56,6 +67,9 @@ public class StoreRequestDto {
                 .id(id)
                 .name(name)
                 .location(location)
+                .phone(phone)
+                .minOrderDue(minOrderDue)
+                .businessHours(businessHours)
                 .orderForm(orderForm)
                 .notice(notice)
                 .canPickup(canPickup)

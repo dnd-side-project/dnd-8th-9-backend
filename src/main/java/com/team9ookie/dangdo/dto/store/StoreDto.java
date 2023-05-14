@@ -22,6 +22,12 @@ public class StoreDto {
 
     private String location;
 
+    private String phone;
+
+    private int minOrderDue;
+
+    private Map<String, String> businessHours;
+
     private Map<String, String> orderForm;
 
     private String notice;
@@ -39,6 +45,9 @@ public class StoreDto {
                 .id(id)
                 .name(name)
                 .location(location)
+                .phone(phone)
+                .minOrderDue(minOrderDue)
+                .businessHours(businessHours)
                 .orderForm(orderForm)
                 .notice(notice)
                 .canPickup(canPickup)
@@ -52,6 +61,9 @@ public class StoreDto {
                 .id(store.getId())
                 .name(store.getName())
                 .location(store.getLocation())
+                .phone(store.getPhone())
+                .minOrderDue(store.getMinOrderDue())
+                .businessHours(store.getBusinessHours())
                 .orderForm(store.getOrderForm())
                 .notice(store.getNotice())
                 .canPickup(store.isCanPickup())

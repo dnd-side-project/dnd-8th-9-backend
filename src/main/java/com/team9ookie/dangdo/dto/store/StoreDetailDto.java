@@ -18,6 +18,12 @@ public class StoreDetailDto {
 
     private String location;
 
+    private String phone;
+
+    private int minOrderDue;
+
+    private Map<String, String> businessHours;
+
     private double rating;
 
     private int reviewCount;
