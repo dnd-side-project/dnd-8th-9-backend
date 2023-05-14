@@ -23,6 +23,12 @@ public class StoreResponseDto {
 
     private String location;
 
+    private String phone;
+
+    private int minOrderDue;
+
+    private Map<String, String> businessHours;
+
     private double rating;
 
     private int reviewCount;
@@ -52,6 +58,9 @@ public class StoreResponseDto {
                 .id(id)
                 .name(name)
                 .location(location)
+                .phone(phone)
+                .minOrderDue(minOrderDue)
+                .businessHours(businessHours)
                 .orderForm(orderForm)
                 .notice(notice)
                 .canPickup(canPickup)
@@ -67,6 +76,9 @@ public class StoreResponseDto {
                 .id(store.getId())
                 .name(store.getName())
                 .location(store.getLocation())
+                .phone(store.getPhone())
+                .minOrderDue(store.getMinOrderDue())
+                .businessHours(store.getBusinessHours())
                 .orderForm(store.getOrderForm())
                 .notice(store.getNotice())
                 .canPickup(store.isCanPickup())
@@ -79,6 +91,9 @@ public class StoreResponseDto {
                 .id(dto.getId())
                 .name(dto.getName())
                 .location(dto.getLocation())
+                .phone(dto.getPhone())
+                .minOrderDue(dto.getMinOrderDue())
+                .businessHours(dto.getBusinessHours())
                 .rating(dto.getRating())
                 .reviewCount(dto.getReviewCount())
                 .reviewStats(dto.getReviewStats())

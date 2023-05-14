@@ -6,9 +6,8 @@ import com.team9ookie.dangdo.dto.review.GoodPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.team9ookie.dangdo.entity.QReview.review;
 
@@ -24,13 +23,19 @@ public class CustomReviewRepository {
                 .from(review)
                 .where(review.store.id.eq(storeId))
                 .groupBy(review.goodPoint)
+                .orderBy(review.count().desc())
                 .fetch();
-        Map<String, Integer> reviewStats = new HashMap<>();
+        Map<String, Integer> reviewStats = new LinkedHashMap<>();
+        Set<GoodPoint> goodPointSet = Arrays.stream(GoodPoint.values()).collect(Collectors.toSet());
         for (Tuple tuple : tupleList) {
             GoodPoint goodPoint = tuple.get(review.goodPoint);
+            goodPointSet.remove(goodPoint);
             String message = goodPoint.getMessage();
             Integer count = tuple.get(review.count().castToNum(Integer.class));
             reviewStats.put(message, count);
+        }
+        for (GoodPoint goodPoint : goodPointSet) {
+            reviewStats.put(goodPoint.getMessage(), 0);
         }
         return reviewStats;
     }
