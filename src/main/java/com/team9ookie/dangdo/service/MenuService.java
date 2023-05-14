@@ -57,7 +57,7 @@ public class MenuService {
         return menuDetailDtoList.stream().map(menu -> {
             List<FileEntity> menuImages = fileRepository.findAllByTypeAndTargetId(FileType.MENU_IMAGE, menu.getId());
             List<StoreLink> storeLinkList = storeLinkRepository.findAllByStoreId(menu.getStoreId());
-            return MenuResponseListDto.create(menu).menuImage(menuImages.stream().map(FileDto::of).toList()).links(storeLinkList.stream().map(StoreLinkDto::of).toList()).build();
+            return MenuResponseListDto.create(menu).menuImages(menuImages.stream().map(FileDto::of).toList()).links(storeLinkList.stream().map(StoreLinkDto::of).toList()).build();
         }).toList();
     }
 
@@ -65,7 +65,11 @@ public class MenuService {
     public List<MenuResponseDto> findByStoreId(Long storeId) {
         List<Menu> menuList = menuRepository.findByStore_Id(storeId);
 
-        return menuList.stream().map(menu -> MenuResponseDto.create(menu).build()).toList();
+
+        return menuList.stream().map(menu -> {
+            List<FileEntity> fileEntityList = fileRepository.findAllByTypeAndTargetId(FileType.MENU_IMAGE, menu.getId());
+            return MenuResponseDto.create(menu).menuImages(fileEntityList.stream().map(FileDto::of).toList()).build();
+        }).toList();
     }
 
     @Transactional

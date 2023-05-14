@@ -23,7 +23,7 @@ public class MenuResponseListDto {
     private List<String> category;
     private int price;
 
-    private List<FileDto> menuImage;
+    private List<FileDto> menuImages;
     @JsonIgnore
     private int reviewCount;
     @JsonIgnore
