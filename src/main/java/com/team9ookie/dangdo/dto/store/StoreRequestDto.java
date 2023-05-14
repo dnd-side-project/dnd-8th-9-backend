@@ -1,8 +1,13 @@
 package com.team9ookie.dangdo.dto.store;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team9ookie.dangdo.entity.Store;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -76,6 +81,42 @@ public class StoreRequestDto {
                 .canDelivery(canDelivery)
                 .category(String.join(",", category))
                 .build();
+    }
+
+    @Component
+    @RequiredArgsConstructor
+    @Slf4j
+    static class StoreLinkDtoConverter implements Converter<String, List<StoreLinkDto>> {
+
+        private final ObjectMapper objectMapper;
+
+        @Override
+        public List<StoreLinkDto> convert(String source) {
+            try {
+                return objectMapper.readValue(source, new TypeReference<List<StoreLinkDto>>() {});
+            } catch (Exception e) {
+                log.error("String -> List 변환 실패", e);
+            }
+            return null;
+        }
+    }
+
+    @Component
+    @RequiredArgsConstructor
+    @Slf4j
+    static class MultipartListConverter implements Converter<String, List<MultipartFile>> {
+
+        private final ObjectMapper objectMapper;
+
+        @Override
+        public List<MultipartFile> convert(String source) {
+            try {
+                return objectMapper.readValue(source, List.class);
+            } catch (Exception e) {
+                log.error("String -> List 변환 실패", e);
+            }
+            return null;
+        }
     }
 
 }
