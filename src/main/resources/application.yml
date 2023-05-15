@@ -1,5 +1,6 @@
 server:
   port: 80
+  address: 172.31.23.107
   servlet:
     context-path: /
     encoding:
