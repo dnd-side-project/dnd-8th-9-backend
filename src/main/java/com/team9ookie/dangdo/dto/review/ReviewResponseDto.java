@@ -1,9 +1,11 @@
 package com.team9ookie.dangdo.dto.review;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.team9ookie.dangdo.dto.file.FileDto;
 import com.team9ookie.dangdo.entity.Review;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -34,6 +36,9 @@ public class ReviewResponseDto {
 
     private String profileImage;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createDate;
+
     private List<FileDto> reviewImages;
 
     public static ReviewResponseDto of(Review review) {
@@ -48,6 +53,7 @@ public class ReviewResponseDto {
                 .storeName(review.getStore().getName())
                 .nickname(review.getUser().getNickname())
                 .profileImage(review.getUser().getProfileImg())
+                .createDate(review.getCreatedDate())
                 .build();
     }
 
