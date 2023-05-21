@@ -3,6 +3,7 @@ package com.team9ookie.dangdo.controller;
 import com.team9ookie.dangdo.dto.BaseResponseDto;
 import com.team9ookie.dangdo.dto.review.ReviewRequestDto;
 import com.team9ookie.dangdo.dto.review.ReviewResponseDto;
+import com.team9ookie.dangdo.entity.User;
 import com.team9ookie.dangdo.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -30,13 +31,13 @@ public class ReviewController {
     }
 
     @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<BaseResponseDto<Long>> create(@ModelAttribute ReviewRequestDto dto) throws IOException {
-        return ResponseEntity.ok(BaseResponseDto.ok(reviewService.create(dto)));
+    public ResponseEntity<BaseResponseDto<Long>> create(@ModelAttribute ReviewRequestDto dto, User user) throws IOException {
+        return ResponseEntity.ok(BaseResponseDto.ok(reviewService.create(dto, user)));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponseDto<Long>> delete(@PathVariable long id) {
-        return ResponseEntity.ok(BaseResponseDto.ok(reviewService.delete(id)));
+    public ResponseEntity<BaseResponseDto<Long>> delete(@PathVariable long id, User user) {
+        return ResponseEntity.ok(BaseResponseDto.ok(reviewService.delete(id, user)));
     }
 
 }

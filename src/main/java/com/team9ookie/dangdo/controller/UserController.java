@@ -11,10 +11,8 @@ import com.team9ookie.dangdo.dto.user.UserResponseDto;
 import com.team9ookie.dangdo.entity.User;
 import com.team9ookie.dangdo.service.MenuService;
 import com.team9ookie.dangdo.service.StoreService;
-import com.team9ookie.dangdo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,25 +25,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
     private final StoreService storeService;
     private final MenuService menuService;
     private final ObjectMapper objectMapper;
 
     @GetMapping
-    public ResponseEntity<BaseResponseDto<UserResponseDto>> getUser() {
-
-        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        User user = userService.getUser(principal.getUsername());
-
+    public ResponseEntity<BaseResponseDto<UserResponseDto>> getUser(User user) {
         return ResponseEntity.ok(BaseResponseDto.ok(UserResponseDto.create(user).build()));
     }
 
     @GetMapping("/store-bookmarks")
-    public ResponseEntity<BaseResponseDto<List<StoreListResponseDto>>> findStoreBookmarkList(@RequestParam(name = "cond", required = false) String condition) {
-        org.springframework.security.core.userdetails.User principal =
-                (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public ResponseEntity<BaseResponseDto<List<StoreListResponseDto>>> findStoreBookmarkList(@RequestParam(name = "cond", required = false) String condition, User user) {
         try {
             StoreConditionDto conditionDto;
             if (condition == null) {
@@ -53,7 +43,6 @@ public class UserController {
             } else {
                 conditionDto = objectMapper.readValue(condition, StoreConditionDto.class);
             }
-            User user = userService.getUser(principal.getUsername());
             conditionDto.setUserId(user.getId());
             return ResponseEntity.ok(BaseResponseDto.ok(storeService.findAll(conditionDto)));
         } catch (JsonProcessingException e) {
@@ -62,10 +51,7 @@ public class UserController {
     }
 
     @GetMapping("/menu-bookmarks")
-    public ResponseEntity<BaseResponseDto<List<MenuResponseListDto>>> findMenuBookmarkList(@RequestParam(name = "cond", required = false) String condition) {
-        org.springframework.security.core.userdetails.User principal =
-                (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+    public ResponseEntity<BaseResponseDto<List<MenuResponseListDto>>> findMenuBookmarkList(@RequestParam(name = "cond", required = false) String condition, User user) {
         try {
             MenuConditionDto conditionDto;
             if (condition == null) {
@@ -73,7 +59,6 @@ public class UserController {
             } else {
                 conditionDto = objectMapper.readValue(condition, MenuConditionDto.class);
             }
-            User user = userService.getUser(principal.getUsername());
             conditionDto.setUserId(user.getId());
             return ResponseEntity.ok(BaseResponseDto.ok(menuService.findAll(conditionDto)));
         } catch (JsonProcessingException e) {

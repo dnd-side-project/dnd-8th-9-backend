@@ -3,16 +3,17 @@ package com.team9ookie.dangdo.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team9ookie.dangdo.dto.BaseResponseDto;
-import com.team9ookie.dangdo.dto.menu.*;
+import com.team9ookie.dangdo.dto.menu.MenuConditionDto;
+import com.team9ookie.dangdo.dto.menu.MenuDetailDto;
+import com.team9ookie.dangdo.dto.menu.MenuRequestDto;
+import com.team9ookie.dangdo.dto.menu.MenuResponseListDto;
 import com.team9ookie.dangdo.dto.review.ReviewResponseDto;
 import com.team9ookie.dangdo.entity.User;
 import com.team9ookie.dangdo.service.MenuService;
 import com.team9ookie.dangdo.service.ReviewService;
-import com.team9ookie.dangdo.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,7 +26,6 @@ public class MenuController {
 
     private final MenuService menuService;
     private final ReviewService reviewService;
-    private final UserService userService;
     private final ObjectMapper objectMapper;
 
     @GetMapping("")
@@ -69,20 +69,12 @@ public class MenuController {
     }
 
     @PostMapping("/{id}/bookmarks")
-    public ResponseEntity<BaseResponseDto<Long>> createBookmark(@PathVariable long id) {
-        org.springframework.security.core.userdetails.User principal =
-                (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        User user = userService.getUser(principal.getUsername());
+    public ResponseEntity<BaseResponseDto<Long>> createBookmark(@PathVariable long id, User user) {
         return ResponseEntity.ok(BaseResponseDto.ok(menuService.createBookmark(id, user)));
     }
 
     @DeleteMapping("/{id}/bookmarks")
-    public ResponseEntity<BaseResponseDto<Long>> deleteBookmark(@PathVariable long id) {
-        org.springframework.security.core.userdetails.User principal =
-                (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        User user = userService.getUser(principal.getUsername());
+    public ResponseEntity<BaseResponseDto<Long>> deleteBookmark(@PathVariable long id, User user) {
         return ResponseEntity.ok(BaseResponseDto.ok(menuService.deleteBookmark(id, user)));
     }
 

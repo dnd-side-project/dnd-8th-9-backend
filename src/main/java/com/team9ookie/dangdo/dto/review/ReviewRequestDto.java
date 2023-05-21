@@ -3,6 +3,7 @@ package com.team9ookie.dangdo.dto.review;
 import com.team9ookie.dangdo.entity.Menu;
 import com.team9ookie.dangdo.entity.Review;
 import com.team9ookie.dangdo.entity.Store;
+import com.team9ookie.dangdo.entity.User;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,7 +32,7 @@ public class ReviewRequestDto {
 
     private long menuId;
 
-    public Review toEntity(Store store, Menu menu) {
+    public Review toEntity(Store store, Menu menu, User user) {
         return Review.builder()
                 .content(content)
                 .dangdo(dangdo)
@@ -39,6 +40,7 @@ public class ReviewRequestDto {
                 .reorder(isReorder())
                 .store(store)
                 .menu(menu)
+                .user(user)
                 .build();
     }
 
