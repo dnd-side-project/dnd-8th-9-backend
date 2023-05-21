@@ -13,11 +13,9 @@ import com.team9ookie.dangdo.entity.User;
 import com.team9ookie.dangdo.service.MenuService;
 import com.team9ookie.dangdo.service.ReviewService;
 import com.team9ookie.dangdo.service.StoreService;
-import com.team9ookie.dangdo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +28,6 @@ public class StoreController {
     private final StoreService storeService;
     private final MenuService menuService;
     private final ReviewService reviewService;
-    private final UserService userService;
     private final ObjectMapper objectMapper;
 
     @GetMapping("")
@@ -79,20 +76,12 @@ public class StoreController {
     }
 
     @PostMapping("/{id}/bookmarks")
-    public ResponseEntity<BaseResponseDto<Long>> createBookmark(@PathVariable long id) {
-        org.springframework.security.core.userdetails.User principal =
-                (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        User user = userService.getUser(principal.getUsername());
+    public ResponseEntity<BaseResponseDto<Long>> createBookmark(@PathVariable long id, User user) {
         return ResponseEntity.ok(BaseResponseDto.ok(storeService.createBookmark(id, user)));
     }
 
     @DeleteMapping("/{id}/bookmarks")
-    public ResponseEntity<BaseResponseDto<Long>> deleteBookmark(@PathVariable long id) {
-        org.springframework.security.core.userdetails.User principal =
-                (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        User user = userService.getUser(principal.getUsername());
+    public ResponseEntity<BaseResponseDto<Long>> deleteBookmark(@PathVariable long id, User user) {
         return ResponseEntity.ok(BaseResponseDto.ok(storeService.deleteBookmark(id, user)));
     }
 
