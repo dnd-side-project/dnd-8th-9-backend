@@ -48,9 +48,9 @@ public class MenuController {
         return ResponseEntity.ok(BaseResponseDto.ok(menuService.findById(id)));
     }
 
-    @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<BaseResponseDto<Long>> save(@RequestPart MenuRequestDto dto, @RequestPart(name = "files", required = false) List<MultipartFile> fileList) throws Exception {
-        return ResponseEntity.ok(BaseResponseDto.ok(menuService.save(dto, fileList)));
+    @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<BaseResponseDto<Long>> save(@ModelAttribute MenuRequestDto dto) throws Exception {
+        return ResponseEntity.ok(BaseResponseDto.ok(menuService.save(dto)));
     }
 
     @PutMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})

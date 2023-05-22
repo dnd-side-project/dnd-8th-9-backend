@@ -28,7 +28,8 @@ public class MenuService {
     private final StoreLinkRepository storeLinkRepository;
 
     @Transactional
-    public Long save(MenuRequestDto requestDto, List<MultipartFile> fileList) throws Exception {
+    public Long save(MenuRequestDto requestDto) throws Exception {
+        List<MultipartFile> fileList = requestDto.getFileList();
         Store store = storeService.findById(requestDto.getStoreId()).toEntity();
         Long id = menuRepository.save(requestDto.toEntity(store)).getId();
 
